@@ -92,23 +92,36 @@ const getData = () => {
         })
         .join('');
 
-      const ignoreListHtmls = this.ignoreList.map((ig) => ig).join('; ');
+      const ignoreListHtmls = this.ignoreList
+        .map((ig) => `<b>${ig}</b>`)
+        .join('; ');
 
       const totalCredit = this.data.reduce(
         (acc, curr) => acc + parseInt(curr.credit),
         0
       );
 
-      const avgPoint =
-        this.data.reduce(
-          (acc, curr) => acc + parseFloat(curr.point) * parseInt(curr.credit),
-          0
-        ) / totalCredit;
+      const avg = this.data.reduce(
+        (acc, curr) => {
+          const point = parseFloat(curr.point);
+          const credit = parseInt(curr.credit);
+
+          if (isNaN(point) || isNaN(credit)) return acc;
+          return {
+            point: acc.point + point * credit,
+            credit: acc.credit + credit,
+          };
+        },
+        {
+          point: 0,
+          credit: 0,
+        }
+      );
 
       $('table.data').innerHTML = tableHtmls;
       $('.ignore-list > span').innerHTML = ignoreListHtmls;
       $('.total-credit span').innerText = totalCredit;
-      $('.avg-point span').innerText = avgPoint.toFixed(4);
+      $('.avg-point span').innerText = (avg.point / avg.credit).toFixed(4);
     },
     handle() {
       $('.btn-import-data').addEventListener('click', () =>
