@@ -53,7 +53,7 @@ const getData = () => {
 
             if (!URL.includes(_URL_TIENICHSV)) {
               $('.site-current').innerHTML =
-                'Vui lòng chuyển sang tienichsv.ou.edu.vn/#/diem!';
+                'Vui lòng chuyển sang tienichsv.ou.edu.vn/#/diem';
               return;
             }
 
