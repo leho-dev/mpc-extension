@@ -1,0 +1,86 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding: 4px 12px;
+  gap: 4px;
+}
+
+.site {
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-import-data {
+  margin: auto;
+}
+
+.root {
+  margin-top: 12px;
+}
+
+.ignore-list {
+  margin: 4px 0;
+}
+
+.add-subject {
+  margin-bottom: 6px;
+}
+
+fieldset {
+  padding: 4px 12px;
+}
+
+.form-group {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.form-group input {
+  flex: 1;
+}
+
+.btn-add-subject {
+  width: 100%;
+}
+
+.root .result {
+  margin: 12px 0;
+}
+
+.total-credit,
+.avg-point {
+  display: flex;
+}
+
+.total-credit span,
+.avg-point span {
+  font-weight: bold;
+  margin-left: auto;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  user-select: text;
+}
+
+.table-title {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+table.data td {
+  padding: 2px 4px;
+}
+
+table.data td:not(:first-child, :nth-child(2)) {
+  text-align: center;
+}
+
+table.data td:last-child {
+  cursor: pointer;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo</title>
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+  <div class="app">
+    <div class="site">
+      <span class="site-current"></span>
+    </div>
+    <button class="btn btn-active btn-import-data">Nhập dữ liệu</button>
+    <div class="root" id="root">
+      <h4 class="table-title">DỮ LIỆU BẢNG ĐIỂM</h4>
+      <div class="ignore-list">
+        Loại trừ các mã: <span>NONE</span>
+      </div>
+      <form class="form-subject">
+        <fieldset>
+          <legend>Thêm, sửa môn:</legend>
+          <div class="form-group">
+            <input class="name" type="text" placeholder="Tên môn">
+          </div>
+          <div class="form-group">
+            <input class="code" type="text" placeholder="Mã môn">
+            <input class="credit" type="number" placeholder="Tín chỉ">
+            <input class="point" type="text" placeholder="Điểm (3.5)">
+          </div>
+          <button type="submit" class="btn btn-active btn-add-subject">Thêm/sửa</button>
+        </fieldset>
+      </form>
+      <div class="result">
+        <div class="total-credit">Tín chỉ: <span>0</span></div>
+        <div class="avg-point">Điểm trung bình: <span>0</span></div>
+      </div>
+      <table class="data" border="1">
+
+      </table>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/js/tienichsv.js"></script>
+</body>
+
+</html>
