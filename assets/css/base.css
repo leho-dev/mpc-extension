@@ -76,3 +76,7 @@ body::-webkit-scrollbar {
 input {
   padding: 4px 12px;
 }
+
+.hide {
+  display: none;
+}
