@@ -4,11 +4,23 @@ import { _IGNORE_SUBJECT_INIT, _URL_TIENICHSV } from './constant.js';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 
-const initInjectScript = () => {
+const getInitData = () => {
   const URL = window.location.href;
+  let userId = 'NOT FOUND';
+  let fullName = 'NOT FOUND';
+
+  const loginElement = document.querySelectorAll('app-login table > tr');
+
+  if (loginElement.length > 0) {
+    userId = loginElement[0].querySelectorAll('td')[1].innerText.trim();
+    fullName = loginElement[1].querySelectorAll('td')[1].innerText.trim();
+  }
 
   (async () => {
-    await chrome.runtime.sendMessage({ type: 'INIT_URL', payload: { URL } });
+    await chrome.runtime.sendMessage({
+      type: 'INIT_URL',
+      payload: { URL, userId, fullName },
+    });
   })();
 };
 
@@ -37,27 +49,34 @@ const getData = () => {
     ignoreList: _IGNORE_SUBJECT_INIT,
     data: [],
     init() {
-      injectScriptActiveTab(initInjectScript);
+      injectScriptActiveTab(getInitData);
     },
     subscribe() {
+      const notCorrectURL = () => {
+        $('.root').classList.add('hide');
+        $('.btn-import-data').classList.add('hide');
+      };
+
       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const { type, payload } = request;
 
         switch (type) {
           case 'INIT_URL':
-            const { URL } = payload;
+            const { URL, userId, fullName } = payload;
             if (!URL) {
+              notCorrectURL();
               $('.site-current').innerText = 'Lỗi không tìm thấy tab!';
               return;
             }
 
             if (!URL.includes(_URL_TIENICHSV)) {
+              notCorrectURL();
               $('.site-current').innerHTML =
                 'Vui lòng chuyển sang tienichsv.ou.edu.vn/#/diem';
               return;
             }
 
-            $('.site-current').innerText = URL;
+            $('.site-current').innerText = userId + ' - ' + fullName;
             return;
 
           case 'GET_DATA':
