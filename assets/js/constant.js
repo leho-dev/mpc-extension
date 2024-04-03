@@ -1,5 +1,5 @@
 const _IGNORE_SUBJECT_INIT = [
-  '_BHYT', // BHYT
+  '_', // BHYT, Đồng phục thể dục
   'MEETING', // Sinh hoạt lớp
   'PEDU', // Giáo dục thể chất
   'DEDU', // Giáo dục quốc phòng
