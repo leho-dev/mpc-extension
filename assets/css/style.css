@@ -75,6 +75,18 @@ table.data {
 
         &:last-child {
             cursor: pointer;
+
+            &:hover {
+                color: red;
+                font-weight: 700;
+            }
+        }
+    }
+
+    .row-data {
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.1);
         }
     }
 }
