@@ -9,14 +9,14 @@
  */
 
 export const injectScriptActiveTab = (injectScript) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs[0];
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs[0];
 
-    chrome.scripting
-      .executeScript({
-        target: { tabId: tab.id },
-        func: injectScript,
-      })
-      .then(() => console.log('Injected!'));
-  });
+        chrome.scripting
+            .executeScript({
+                target: { tabId: tab.id },
+                func: injectScript
+            })
+            .then(() => console.log('Injected!'));
+    });
 };
