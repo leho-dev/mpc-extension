@@ -81,3 +81,8 @@ input {
 .hide {
     display: none;
 }
+
+.footer {
+    text-align: center;
+    padding: 4px 12px;
+}

@@ -39,6 +39,7 @@ fieldset {
     margin-bottom: 12px;
 
     input {
+        width: 100%;
         flex: 1;
     }
 }
