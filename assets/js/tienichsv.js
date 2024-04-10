@@ -74,12 +74,22 @@ const getData = () => {
                     case 'GET_DATA':
                         const { data } = payload;
 
-                        const dataFiltered = data.filter((d) => {
+                        // Môn học trong danh sách ignore
+                        let dataFiltered = data.filter((d) => {
                             const isIgnore = this.ignoreList.find((i) => d.code.includes(i));
                             if (!isIgnore) return true;
                         });
 
-                        this.data = dataFiltered;
+                        // Lọc môn học trùng (học lại, học cải thiện)
+                        const map = {};
+                        dataFiltered.forEach((item) => {
+                            const code = item.code;
+                            if (!map[code] || parseFloat(item.point) > parseFloat(map[code].point)) {
+                                map[code] = item;
+                            }
+                        });
+
+                        this.data = Object.values(map);
                         this.render();
                         return;
                     default:
