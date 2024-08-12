@@ -1,21 +1,12 @@
 {
   "branches": [
-    "release"
+    "main"
   ],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
-    [
-      "@semantic-release/github",
-      {
-        "assets": [
-          "assets/**",
-          "index.html",
-          "manifest.json"
-        ]
-      }
-    ],
+    "@semantic-release/github",
     "@semantic-release/git"
   ]
 }
