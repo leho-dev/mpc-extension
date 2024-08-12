@@ -1,9 +1,9 @@
-name: Release
+name: Release Extension
 
 on:
   push:
     branches:
-      - release
+      - main
 
 permissions:
   contents: write
@@ -23,16 +23,15 @@ jobs:
           node-version: "20"
 
       - name: Enable pnpm
-        run: corepack enable pnpm
+        run: corepack enable
 
       - name: Install dependencies
         run: |
           pnpm install
-          echo "demo"
 
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0
-        run: npx semantic-release
+        run: pnpm dlx semantic-release
