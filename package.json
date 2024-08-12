@@ -1,0 +1,32 @@
+{
+  "name": "mpc-extension",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "",
+  "scripts": {
+    "format": "pnpm dlx prettier --write .",
+    "lint": "pnpm eslint",
+    "lint:fix": "pnpm eslint --fix",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*": [
+      "pnpm format",
+      "pnpm lint:fix"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@eslint/js": "^9.9.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.9.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
+    "prettier": "^3.3.3"
+  }
+}
