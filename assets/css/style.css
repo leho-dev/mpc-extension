@@ -1,148 +1,148 @@
-.app {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    padding: 4px 12px;
-    gap: 4px;
-}
+.no-data {
+  margin: 8px;
+  white-space: nowrap;
+  text-align: center;
 
-.site {
-    white-space: nowrap;
-    display: flex;
-    justify-content: center;
+  .nav-link {
+    font-weight: bold;
+    cursor: pointer;
+  }
 }
 
 .btn-import-data {
-    margin: auto;
+  margin: 8px auto 0;
+}
+
+.user-info {
+  margin-top: 8px;
+  text-align: center;
 }
 
 .root {
-    margin-top: 12px;
 }
 
 #updatedAt {
-    text-align: center;
-    font-style: italic;
-    color: #89a0ac;
-    font-size: 1.4rem;
+  text-align: center;
+  font-style: italic;
+  color: #89a0ac;
+  font-size: 1.4rem;
 }
 
 .ignore-list {
-    margin: 4px 0;
+  margin: 4px 0;
 }
 
 .add-subject {
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 }
 
 fieldset {
-    padding: 4px 12px;
+  padding: 4px 12px;
 }
 
 .form-group {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 12px;
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
 
-    input {
-        width: 100%;
-        flex: 1;
-    }
+  input {
+    width: 100%;
+    flex: 1;
+  }
 }
 
 .btn-add-subject {
-    width: 100%;
+  width: 100%;
 }
 
 .root .result {
-    margin: 12px 0;
+  margin: 12px 0;
 }
 
 .total-credit,
 .avg-point {
-    display: flex;
+  display: flex;
 
-    span {
-        font-weight: bold;
-        margin-left: auto;
-    }
+  span {
+    font-weight: bold;
+    margin-left: auto;
+  }
 }
 
 .filter-group {
-    margin-top: 8px;
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  input[type="text"] {
+    flex: 1;
+    padding: 6px 12px;
+    width: 100%;
+  }
+
+  .checkbox-group {
     display: flex;
-    gap: 12px;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
+    gap: 6px;
 
-    input[type='text'] {
-        flex: 1;
-        padding: 6px 12px;
-        width: 100%;
+    label {
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-
-        label {
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        input[type='checkbox'] {
-            flex-shrink: 0;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
+    input[type="checkbox"] {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
     }
+  }
 }
 
 table.data {
-    width: 100%;
-    border-collapse: collapse;
-    user-select: text;
+  width: 100%;
+  border-collapse: collapse;
+  user-select: text;
 
-    td {
-        padding: 2px 4px;
+  td {
+    padding: 2px 4px;
 
-        &:not(:first-child, :nth-child(2)) {
-            text-align: center;
-        }
+    &:not(:first-child, :nth-child(2)) {
+      text-align: center;
+    }
+  }
+
+  .row-data {
+    &.ignore {
+      background-color: #e3e3e3;
     }
 
-    .row-data {
-        &.ignore {
-            background-color: #e3e3e3;
-        }
-
-        &:hover {
-            cursor: pointer;
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-delete:hover {
-            color: red;
-            font-weight: bold;
-        }
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(0, 0, 0, 0.1);
     }
 
-    .row-head {
-        background-color: #bad5e4;
-        font-weight: bold;
-
-        div {
-            display: flex;
-            justify-content: space-between;
-        }
+    .btn-delete:hover {
+      color: red;
+      font-weight: bold;
     }
+  }
+
+  .row-head {
+    background-color: #bad5e4;
+    font-weight: bold;
+
+    div {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
 }
 
 .table-title {
-    text-align: center;
-    margin-bottom: 4px;
+  text-align: center;
+  margin-bottom: 4px;
 }
