@@ -1,6 +1,5 @@
 {
   "branches": [
-    "main",
     "dev"
   ],
   "plugins": [
