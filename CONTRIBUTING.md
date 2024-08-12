@@ -2,28 +2,25 @@
 
 Dưới đây là một số hướng dẫn cho bạn:
 
- - [Phát hiện lỗi](#issue)
- - [Thêm tính năng](#feature)
- - [Hướng dẫn đóng góp mã nguồn](#submit)
-
+- [Phát hiện lỗi](#issue)
+- [Thêm tính năng](#feature)
+- [Hướng dẫn đóng góp mã nguồn](#submit)
 
 ## <a name="issue"></a> Phát hiện lỗi?
 
 Nếu gặp lỗi hãy [tạo mới một issue](#submit-issue) để thông báo cho chúng tôi.
 Hoặc nếu bạn có thể fix chúng, đừng ngần ngại [tạo pull request](#submit-pr).
 
-
 ## <a name="feature"></a> Thêm tính năng
+
 Bạn có thể yêu cầu, gợi ý một tính năng mới thông qua [tạo issue](#submit-issue).
 Nếu muốn thực hiện một tính năng mới, hãy xem xét độ thay đổi của chúng để xác định cách bước tiếp theo phù hợp:
 
-* Đối với **tính năng chính (Major Features)**, trước hết hãy tạo một issue, đề cập về đề xuất của bạn để chúng được thảo luận.
+- Đối với **tính năng chính (Major Features)**, trước hết hãy tạo một issue, đề cập về đề xuất của bạn để chúng được thảo luận.
 
-* Với các **tính năng nhỏ (Small Features)** có thể được tạo và gửi thông qua [tạo pull request](#submit-pr).
-
+- Với các **tính năng nhỏ (Small Features)** có thể được tạo và gửi thông qua [tạo pull request](#submit-pr).
 
 ## <a name="submit"></a> Đóng góp mã nguồn
-
 
 ### <a name="submit-issue"></a> Tạo mới một issue
 
@@ -45,16 +42,16 @@ Trước khi gửi PR, hãy đọc qua các bước dưới đây:
 
 3. Tạo một nhánh mới để fix lỗi:
 
-     ```shell
-     git checkout -b my-fix-branch master
-     ```
+   ```shell
+   git checkout -b my-fix-branch master
+   ```
 
 4. Commit các thay đổi theo quy tắc [commit message conventions](https://www.conventionalcommits.org/en/v1.0.0/), bạn có thể xem các ví dụ tại [đây](https://github.com/leho-dev/mpc-extension/commits/master/).
 
 5. Đưa code lên github:
 
-    ```shell
-    git push origin my-fix-branch
-    ```
+   ```shell
+   git push origin my-fix-branch
+   ```
 
 6. Trên GitHub, tạo một PR đến nhánh `master` của `mpc-extension`.

@@ -7,10 +7,11 @@
     "format": "pnpm dlx prettier --write .",
     "lint": "pnpm eslint",
     "lint:fix": "pnpm eslint --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "lint-staged": {
-    "*": [
+    "*.{html,css,js,json}": [
       "pnpm format",
       "pnpm lint:fix"
     ]
@@ -22,11 +23,17 @@
     "@commitlint/cli": "^19.4.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@eslint/js": "^9.9.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.1.4",
+    "@semantic-release/npm": "^12.0.1",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.9.0",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.8",
-    "prettier": "^3.3.3"
-  }
+    "prettier": "^3.3.3",
+    "semantic-release": "^24.0.0"
+  },
+  "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf"
 }

@@ -1,62 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MPC Extension</title>
+    <link rel="stylesheet" href="./assets/css/base.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo</title>
-  <link rel="stylesheet" href="./assets/css/base.css">
-  <link rel="stylesheet" href="./assets/css/style.css">
-</head>
-
-<body>
-  <div class="app">
-    <strong class="site">
-      <span class="site-current">Không tìm thấy thông tin!</span>
-    </strong>
-    <button class="btn btn-active btn-import-data hide">Nhập dữ liệu</button>
-    <div class="root hide" id="root">
-      <h4 class="table-title">DỮ LIỆU BẢNG ĐIỂM</h4>
-      <div id="updatedAt"></div>
-      <div class="filter-group">
-        <input type="text" placeholder="Tìm theo tên môn học..." id="search-subject" />
-        <div class="checkbox-group" title="Chỉ hiển thị các môn học tính GPA">
-          <input type="checkbox" id="only-calc-gpa">
-          <label for="only-calc-gpa">Only GPA</label>
+  <body>
+    <div class="app">
+      <div class="error-message hide"></div>
+      <div class="no-data">
+        <div>Không có dữ liệu được lưu!</div>
+        <div>
+          Vui lòng chuyển sang <b class="nav-link">https://tienichsv.ou.edu.vn/#/diem</b> để lưu thông tin mới nhất!
         </div>
       </div>
-      <!-- <div class="ignore-list">
-        Loại trừ các mã: <span>NONE</span>
-      </div> -->
-      <!-- <form class="form-subject">
-        <fieldset>
-          <legend>Thêm, sửa môn:</legend>
-          <div class="form-group">
-            <input class="name" type="text" placeholder="Tên môn">
+      <button class="btn btn-active btn-import-data hide">Nhập dữ liệu mới</button>
+      <b>
+        <div class="user-info hide">Phan Lê Hồ - demo</div>
+      </b>
+
+      <div class="root hide" id="root">
+        <div id="updatedAt"></div>
+        <div class="filter-group">
+          <input type="text" placeholder="Tìm theo tên môn học..." id="search-subject" />
+          <div class="checkbox-group" title="Chỉ hiển thị các môn học tính GPA">
+            <input type="checkbox" id="only-calc-gpa" />
+            <label for="only-calc-gpa">Only GPA</label>
           </div>
-          <div class="form-group">
-            <input class="code" type="text" placeholder="Mã môn">
-            <input class="credit" type="number" placeholder="Tín chỉ">
-            <input class="point" type="number" placeholder="Điểm (3.5)" min="0" max="4" step="0.5">
-          </div>
-          <button type="submit" class="btn btn-active btn-add-subject">Thêm/sửa</button>
-        </fieldset>
-      </form>-->
-      <div class="result">
-        <div class="total-credit">Tín chỉ: <span>0</span></div>
-        <div class="avg-point">Điểm trung bình: <span>0</span></div>
+        </div>
+        <div class="result">
+          <div class="total-credit">Tín chỉ: <span>0</span></div>
+          <div class="avg-point">Điểm trung bình: <span>0</span></div>
+        </div>
+        <table class="data" border="1"></table>
       </div>
-      <table class="data" border="1">
-
-      </table>
     </div>
-
     <footer class="footer">
       © 2024 Copyright: <a target="_blank" href="https://www.facebook.com/CLBLapTrinhTrenThietBiDiDong">MPC</a>
     </footer>
-  </div>
 
-  <script type="module" src="./assets/js/tienichsv.js"></script>
-</body>
-
+    <script type="module" src="./assets/js/tienichsv.js"></script>
+  </body>
 </html>
