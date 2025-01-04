@@ -11,7 +11,7 @@
   --gray-color: #75777b;
   --header-height: 56px;
   --hover-item: rgb(224, 223, 223);
-  --rgba-black: rgba(0, 0, 0, 0.1);
+  --rgba-black: rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -102,4 +102,13 @@ input {
   text-align: center;
   padding: 4px 12px;
   background-color: var(--primary-color);
+}
+
+.dialog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: var(--rgba-black);
 }

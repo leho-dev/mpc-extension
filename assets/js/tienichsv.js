@@ -1,4 +1,11 @@
-import { debounce, getCapybara, injectScriptActiveTab, removeVietnameseTones, setCapybara } from "./utils.js";
+import {
+  debounce,
+  formatTime,
+  getCapybara,
+  injectScriptActiveTab,
+  removeVietnameseTones,
+  setCapybara
+} from "./utils.js";
 import { _ERROR_MESSAGE_TIMEOUT, _URL_TIENICHSV } from "./constant.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -151,7 +158,7 @@ const setError = (message) => {
       this.userId = user.userId;
       this.renderUser();
     },
-    updateData(data) {
+    updateData(data = this.data) {
       this.data = data;
       this.checkIgnore();
       this.sortData();
@@ -212,42 +219,47 @@ const setError = (message) => {
       $(".user-info").classList.remove("hide");
     },
     renderTime() {
-      $("#updatedAt").innerText = `(Cập nhật ${new Date(this.updatedAt).toLocaleString()})`;
+      $("#updatedAt").innerText = `(Cập nhật ${formatTime(this.updatedAt)})`;
     },
     renderData() {
       const tableHtmls = this.data
-        .map((d, idx) => {
-          const data = d.data.map((row) => {
+        .map((group, groupIdx) => {
+          const data = group.data.map((item, itemIdx) => {
+            const isSearch =
+              removeVietnameseTones(item.name.toLowerCase()).includes(this.queyText) || this.queyText == "";
+            const isHide = !isSearch || (item.isIgnore && this.isOnlyCalcGPA);
+
+            const classValue = `row-data ${item.isIgnore ? "ignore" : ""} ${isHide ? "hide" : ""} `.trim();
+
             return `
-                            <tr
-                                class="row-data
-                                ${row.isIgnore ? "ignore" : ""}
-                                ${row.isIgnore && this.isOnlyCalcGPA ? "hide" : ""}
-                                ${
-                                  removeVietnameseTones(row.name.toLowerCase()).includes(this.queyText) ||
-                                  this.queyText == ""
-                                    ? ""
-                                    : "hide"
-                                }"
-                                ${row.isIgnore ? 'title="Môn học này không tính vào GPA trung bình"' : ""}
-                            >
-                                <td>${row.code}</td>
-                                <td>${row.name}</td>
-                                <td style="min-width: 20px;">${row.credit}</td>
-                                <td style="min-width: 20px;">${row.point || ""}</td>
-                                <td data-id=${idx} class="btn-delete" style="min-width: 20px;">x</td>
-                            </tr>
-                            `;
+            <tr
+                class="${classValue}"
+                data-item-idx=${itemIdx}
+                data-group-idx=${groupIdx}
+                ${item.isIgnore ? 'title="Môn học này không tính vào GPA trung bình"' : ""}
+            >
+                <td>${item.code}</td>
+                <td>${item.name}</td>
+                <td style="min-width: 20px;">${item.credit}</td>
+                <td style="min-width: 20px;">${item.point || ""}</td>
+                <td class="btn-delete" style="min-width: 20px;">x</td>
+            </tr>
+            `;
           });
 
           const dataHtmls = data.join("");
 
           return `
-                    <tr class="row-head">
-                        <td colspan="5"><div>${d.title} <span>${d.totalCredit} - ${d.avgPoint}</span></div></td>
-                    </tr>
-                    ${dataHtmls}
-                    `;
+          <tr class="row-head" data-group-idx=${groupIdx}>
+              <td colspan="5">
+                <div class="row-wrap">
+                  <div class="row-wrap-left"><span>${group.title}</span> <span class="btn">+</span></div> 
+                  <div class="row-wrap-right">${group.totalCredit} - ${group.avgPoint}</div>
+                </div>
+              </td>
+          </tr>
+          ${dataHtmls}
+          `;
         })
         .join("");
 
@@ -256,6 +268,7 @@ const setError = (message) => {
       }, 0);
 
       const avgTotal = { point: 0, credit: 0 };
+
       this.data.forEach((item) => {
         if (isNaN(item.avgPoint)) return;
         const avg = item.data.reduce(
@@ -310,20 +323,13 @@ const setError = (message) => {
         const rowData = e.target.closest(".row-data");
         const deleteBtn = e.target.closest(".btn-delete");
 
-        if (rowData) {
-          const id = rowData.dataset.id;
-          const { code, name, credit, point } = this.data[id];
-
-          $("input.code").value = code;
-          $("input.name").value = name;
-          $("input.credit").value = credit;
-          $("input.point").value = point;
-        }
+        const groupIdx = parseInt(rowData.dataset.groupIdx);
+        const itemIdx = parseInt(rowData.dataset.itemIdx);
 
         if (deleteBtn) {
-          const id = deleteBtn.dataset.id;
-          this.data.splice(id, 1);
-          this.renderData();
+          this.data[groupIdx].data.splice(itemIdx, 1);
+          this.updateData();
+          return;
         }
       };
     },
