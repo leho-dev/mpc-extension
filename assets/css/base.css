@@ -12,6 +12,7 @@
   --header-height: 56px;
   --hover-item: rgb(224, 223, 223);
   --rgba-black: rgba(0, 0, 0, 0.4);
+  --radius: 4px;
 }
 
 * {
@@ -37,6 +38,7 @@ body {
   font-size: 1.6rem;
   color: var(--text-color);
   background-color: var(--bg-color);
+  position: relative;
 }
 
 body::-webkit-scrollbar {
@@ -109,6 +111,21 @@ input {
   left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
+  height: 100vh;
   background-color: var(--rgba-black);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
+.dialog.show {
+  display: flex;
+}
+
+.dialog-body {
+  padding: 20px 12px;
+  border-radius: var(--radius);
+  background: var(--white-color);
+  width: 90%;
 }

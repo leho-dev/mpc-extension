@@ -9,8 +9,27 @@
   </head>
 
   <body>
-    <div class="dialog hide" open>
-      <div class="new-subject"></div>
+    <div class="dialog">
+      <div class="dialog-body">
+        <form class="form-subject">
+          <h4 class="title">Học kỳ 3 - Năm học 2023 - 2024</h4>
+          <fieldset>
+            <legend>Thêm môn học:</legend>
+            <div class="form-group">
+              <input class="name" type="text" placeholder="Tên môn" />
+            </div>
+            <div class="form-group">
+              <input class="code" type="text" placeholder="Mã môn" />
+              <input class="credit" type="number" placeholder="Tín chỉ" />
+              <input class="point" type="number" placeholder="Điểm (3.5)" min="0" max="4" step="0.5" />
+            </div>
+            <div class="form-footer">
+              <button type="button" class="btn btn-cancel btn-close-dialog">Hủy</button>
+              <button type="submit" class="btn btn-active btn-add-subject">Thực hiện</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
     </div>
     <div class="app">
       <div class="error-message hide"></div>

@@ -24,3 +24,6 @@ export const _URL_TIENICHSV = "https://tienichsv.ou.edu.vn";
 
 export const _DEBOUNCE_TIME = 1000;
 export const _ERROR_MESSAGE_TIMEOUT = 5000;
+
+export const _ACTION_CREATE = "create";
+export const _ACTION_UPDATE = "update";

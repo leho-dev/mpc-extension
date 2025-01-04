@@ -29,27 +29,34 @@
   margin: 4px 0;
 }
 
-.add-subject {
-  margin-bottom: 6px;
-}
-
-fieldset {
-  padding: 4px 12px;
-}
-
-.form-group {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 12px;
-
-  input {
-    width: 100%;
-    flex: 1;
+.form-subject {
+  .title {
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 12px;
   }
-}
 
-.btn-add-subject {
-  width: 100%;
+  fieldset {
+    padding: 8px 12px;
+
+    .form-group {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+
+      input {
+        width: 100%;
+        flex: 1;
+      }
+    }
+
+    .form-footer {
+      display: flex;
+      gap: 8px;
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+  }
 }
 
 .root .result {
