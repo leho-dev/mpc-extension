@@ -6,7 +6,7 @@ import {
   removeVietnameseTones,
   setCapybara
 } from "./utils.js";
-import { _ERROR_MESSAGE_TIMEOUT, _URL_TIENICHSV } from "./constant.js";
+import { _ACTION_CREATE, _ACTION_UPDATE, _ERROR_MESSAGE_TIMEOUT, _URL_TIENICHSV } from "./constant.js";
 
 const $ = (selector) => document.querySelector(selector);
 const _$$ = (selector) => document.querySelectorAll(selector);
@@ -75,6 +75,44 @@ const setError = (message) => {
   setTimeout(() => {
     $(".error-message").classList.add("hide");
   }, _ERROR_MESSAGE_TIMEOUT);
+};
+
+const showDialog = (semester, action, subject) => {
+  $(".form-subject .title").innerHTML = semester.title;
+
+  const formFieldsetLegend = $(".form-subject fieldset legend");
+  const formSubmitBtn = $(".form-subject button.btn-add-subject");
+  const inputList = _$$(".form-subject input");
+
+  formSubmitBtn.dataset.action = action;
+  formSubmitBtn.dataset.idx = semester.idx;
+
+  switch (action) {
+    case _ACTION_CREATE:
+      formFieldsetLegend.innerHTML = "Thêm môn học";
+      formSubmitBtn.innerHTML = "Thêm mới";
+      break;
+    case _ACTION_UPDATE:
+      formFieldsetLegend.innerHTML = "Cập nhật môn học";
+      formSubmitBtn.innerHTML = "Cập nhật";
+
+      inputList[0].value = subject.name;
+      inputList[1].value = subject.code;
+      inputList[2].value = subject.credit;
+      inputList[3].value = subject.point;
+
+      break;
+  }
+
+  $(".dialog").classList.add("show");
+};
+
+const closeDialog = () => {
+  $(".dialog").classList.remove("show");
+
+  _$$(".form-subject input").forEach((input) => {
+    input.value = "";
+  });
 };
 
 (() => {
@@ -253,7 +291,7 @@ const setError = (message) => {
           <tr class="row-head" data-group-idx=${groupIdx}>
               <td colspan="5">
                 <div class="row-wrap">
-                  <div class="row-wrap-left"><span>${group.title}</span> <span class="btn">+</span></div> 
+                  <div class="row-wrap-left"><span>${group.title}</span> <span class="btn btn-add-subject">+</span></div> 
                   <div class="row-wrap-right">${group.totalCredit} - ${group.avgPoint}</div>
                 </div>
               </td>
@@ -319,16 +357,77 @@ const setError = (message) => {
         this.renderData();
       });
 
+      $(".dialog").onclick = (e) => {
+        const isDialogBody = e.target.closest(".dialog-body");
+        if (!isDialogBody) {
+          closeDialog();
+        }
+      };
+
+      $(".btn-close-dialog").onclick = closeDialog;
+
+      $(".form-subject").onsubmit = (e) => {
+        e.preventDefault();
+        const action = e.submitter.dataset.action;
+        const idx = parseInt(e.submitter.dataset.idx);
+
+        const inputList = _$$(".form-subject input");
+        const name = inputList[0].value.trim();
+        const code = inputList[1].value.trim();
+        const credit = inputList[2].value.trim();
+        const point = inputList[3].value.trim();
+
+        if (!name || !code || !credit || !point) {
+          setError("Vui lòng điền đầy đủ thông tin!");
+          return;
+        }
+
+        const isExist = this.data.find((d) => d.data.find((item) => item.code === code));
+        if (isExist && action === _ACTION_CREATE) {
+          setError("Mã môn học đã tồn tại!");
+          return;
+        }
+
+        if (action === _ACTION_CREATE) {
+          this.data[idx].data.push({ name, code, credit, point });
+        }
+
+        if (action === _ACTION_UPDATE) {
+          const itemIdx = this.data[idx].data.findIndex((item) => item.code === code);
+          this.data[idx].data[itemIdx] = { name, code, credit, point };
+        }
+
+        this.updateData();
+        closeDialog();
+      };
+
       $("table.data").onclick = (e) => {
         const rowData = e.target.closest(".row-data");
         const deleteBtn = e.target.closest(".btn-delete");
-
-        const groupIdx = parseInt(rowData.dataset.groupIdx);
-        const itemIdx = parseInt(rowData.dataset.itemIdx);
+        const addSubjectButton = e.target.closest(".btn-add-subject");
 
         if (deleteBtn) {
+          const groupIdx = parseInt(rowData.dataset.groupIdx);
+          const itemIdx = parseInt(rowData.dataset.itemIdx);
+
           this.data[groupIdx].data.splice(itemIdx, 1);
           this.updateData();
+          return;
+        }
+
+        if (rowData) {
+          const groupIdx = parseInt(rowData.dataset.groupIdx);
+          const itemIdx = parseInt(rowData.dataset.itemIdx);
+          const semester = this.data[groupIdx];
+          const subject = this.data[groupIdx].data[itemIdx];
+          showDialog({ title: semester.title, idx: groupIdx }, _ACTION_UPDATE, subject);
+          return;
+        }
+
+        if (addSubjectButton) {
+          const rowHead = e.target.closest(".row-head");
+          const semester = this.data[parseInt(rowHead.dataset.groupIdx)];
+          showDialog({ title: semester.title, idx: rowHead.dataset.groupIdx }, _ACTION_CREATE);
           return;
         }
       };
