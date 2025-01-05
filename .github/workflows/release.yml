@@ -29,9 +29,13 @@ jobs:
         run: |
           pnpm install
 
+      - name: Build project
+        run: pnpm build
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0
-        run: pnpm dlx semantic-release
+        run: |
+          pnpm dlx semantic-release
