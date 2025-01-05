@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/leho-dev/mpc-extension/compare/v0.1.0...v0.1.1) (2025-01-05)
+
+
+### Bug Fixes
+
+* **fake:** add footer info ([ec92d9e](https://github.com/leho-dev/mpc-extension/commit/ec92d9eb11632c0b1f4cc9ff397f6732f65590f3))
+
 # [0.1.0](https://github.com/leho-dev/mpc-extension/compare/v0.0.1...v0.1.0) (2025-01-04)
 
 ### Bug Fixes
