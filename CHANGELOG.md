@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/leho-dev/mpc-extension/compare/v0.1.0...v0.1.1) (2025-01-05)
+
+
+### Bug Fixes
+
+* test release ([0c5a23c](https://github.com/leho-dev/mpc-extension/commit/0c5a23c62113487b62e0c07c319c0159100ba22e))
+
 # [0.1.0](https://github.com/leho-dev/mpc-extension/compare/v0.0.1...v0.1.0) (2025-01-04)
 
 ### Bug Fixes
