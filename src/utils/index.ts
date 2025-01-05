@@ -1,22 +1,14 @@
 // https://developer.chrome.com/docs/extensions/mv3/messaging/
 
-import { _CAPYBARA, _CAPYBARA_DEFAULT, _DEBOUNCE_TIME } from "./constant.js";
+import { _DEBOUNCE_TIME } from "../constants";
 
-/**
- *
- * @param {func} injectScript script chèn vào console
- * @returns void
- * @description Thêm script từ hàm injectScript vào tab đang hoạt động.
- *
- */
-
-export const injectScriptActiveTab = (injectScript) => {
+export const injectScriptActiveTab = (injectScript: () => void) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
 
     chrome.scripting
       .executeScript({
-        target: { tabId: tab.id },
+        target: { tabId: tab.id as number },
         func: injectScript
       })
       .then(() => console.info("Injected JS!"))
@@ -24,9 +16,9 @@ export const injectScriptActiveTab = (injectScript) => {
   });
 };
 
-export function debounce(func, timeout = _DEBOUNCE_TIME) {
-  let timer;
-  return (...args) => {
+export function debounce(func: (...args: any[]) => void, timeout = _DEBOUNCE_TIME) {
+  let timer: number;
+  return function (this: any, ...args: any[]) {
     clearTimeout(timer);
     timer = setTimeout(() => {
       func.apply(this, args);
@@ -34,7 +26,7 @@ export function debounce(func, timeout = _DEBOUNCE_TIME) {
   };
 }
 
-export function removeVietnameseTones(str) {
+export function removeVietnameseTones(str: string) {
   return str
     .normalize("NFD") // Chuẩn hóa chuỗi theo dạng chuẩn Unicode
     .replace(/[\u0300-\u036f]/g, "") // Loại bỏ các dấu tổ hợp
@@ -44,31 +36,8 @@ export function removeVietnameseTones(str) {
     .toLowerCase(); // Chuyển tất cả thành chữ thường
 }
 
-// capybara
-export function getCapybara() {
-  return JSON.parse(localStorage.getItem(_CAPYBARA)) || _CAPYBARA_DEFAULT;
-}
-
-export function setCapybara(data) {
-  localStorage.setItem(_CAPYBARA, JSON.stringify(data));
-}
-
-export function getCapybaraKey(key) {
-  return getCapybara()[key];
-}
-
-export function setCapybaraKey(key, value) {
-  const capybara = getCapybara();
-  capybara[key] = value;
-  setCapybara(capybara);
-}
-
-export function clearCapybara() {
-  localStorage.removeItem(_CAPYBARA);
-}
-
-export function formatTime(time) {
-  const options = {
+export function formatTime(time: Date) {
+  const options: Intl.DateTimeFormatOptions = {
     hour12: false,
     hour: "2-digit",
     minute: "2-digit",
@@ -77,6 +46,31 @@ export function formatTime(time) {
     month: "2-digit",
     day: "2-digit"
   };
+
   const date = new Date(time);
   return date.toLocaleString("en-US", options);
+}
+
+// localStorage
+export function getLocalData(key: string, defaultValue: any = {}) {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : defaultValue;
+}
+
+export function getLocalDataField(key: string, field: string) {
+  return getLocalData(key)[field];
+}
+
+export function setLocalData(key: string, data: any) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+export function setLocalDataField(key: string, field: string, value: any) {
+  const data = getLocalData(key);
+  data[field] = value;
+  setLocalData(key, data);
+}
+
+export function removeLocalData(key: string) {
+  localStorage.removeItem(key);
 }
