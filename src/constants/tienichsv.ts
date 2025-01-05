@@ -1,4 +1,4 @@
-export const _IGNORE_SUBJECT_DEFAULT = [
+export const _TIENICHSV_IGNORE_SUBJECT_DEFAULT: IgnoreItemType[] = [
   "_", // BHYT, Đồng phục thể dục
   "MEETING", // Sinh hoạt lớp
   "PEDU", // Giáo dục thể chất
@@ -8,22 +8,16 @@ export const _IGNORE_SUBJECT_DEFAULT = [
   "GENG4" // Tiếng Anh đầu ra
 ];
 
-export const _CAPYBARA = "capybara";
+export const _TIENICHSV_KEY: string = "tienichsv";
 
-export const _CAPYBARA_DEFAULT = {
+export const _TIENICHSV_DEFAULT: TienichsvDataType = {
   fullName: "",
   userId: "",
-  ignoreList: _IGNORE_SUBJECT_DEFAULT,
+  ignoreList: _TIENICHSV_IGNORE_SUBJECT_DEFAULT,
   updatedAt: new Date(),
   isOnlyCalcGPA: false,
   queyText: "",
   data: []
 };
 
-export const _URL_TIENICHSV = "https://tienichsv.ou.edu.vn";
-
-export const _DEBOUNCE_TIME = 1000;
-export const _ERROR_MESSAGE_TIMEOUT = 5000;
-
-export const _ACTION_CREATE = "create";
-export const _ACTION_UPDATE = "update";
+export const _TIENICHSV_URL: string = "https://tienichsv.ou.edu.vn";

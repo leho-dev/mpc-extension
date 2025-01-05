@@ -21,7 +21,7 @@ export default [
         }
       ]
     },
-    ignores: ["node_modules", "commitlint.config.js"]
+    ignores: ["node_modules", "commitlint.config.js", "dist"]
   },
   pluginJs.configs.recommended,
   eslintConfigPrettier

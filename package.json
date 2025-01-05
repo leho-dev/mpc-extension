@@ -8,10 +8,12 @@
     "lint": "pnpm eslint",
     "lint:fix": "pnpm eslint --fix",
     "prepare": "husky",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "dev": "vite build --watch",
+    "build": "vite build"
   },
   "lint-staged": {
-    "*.{html,css,js,json}": [
+    "*.{html,css,js,ts,json}": [
       "pnpm format",
       "pnpm lint:fix"
     ]
@@ -26,13 +28,18 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^10.1.4",
+    "@types/chrome": "^0.0.289",
+    "@types/node": "^22.10.5",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.9.0",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.8",
     "prettier": "^3.3.3",
-    "semantic-release": "^24.0.0"
+    "semantic-release": "^24.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vite-plugin-static-copy": "^2.2.0"
   },
   "packageManager": "pnpm@9.13.2"
 }

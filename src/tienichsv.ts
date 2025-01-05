@@ -1,15 +1,16 @@
 import {
   debounce,
   formatTime,
-  getCapybara,
+  getLocalData,
   injectScriptActiveTab,
   removeVietnameseTones,
-  setCapybara
-} from "./utils.js";
-import { _ACTION_CREATE, _ACTION_UPDATE, _ERROR_MESSAGE_TIMEOUT, _URL_TIENICHSV } from "./constant.js";
+  setLocalData
+} from "./utils";
+import { _ACTION_CREATE, _ACTION_UPDATE, _ERROR_MESSAGE_TIMEOUT } from "./constants";
+import { _TIENICHSV_DEFAULT, _TIENICHSV_KEY, _TIENICHSV_URL } from "./constants/tienichsv";
 
-const $ = (selector) => document.querySelector(selector);
-const _$$ = (selector) => document.querySelectorAll(selector);
+const $ = (selector: string): HTMLElement | null => document.querySelector(selector);
+const _$$ = (selector: string): NodeListOf<HTMLElement> => document.querySelectorAll(selector);
 
 const getTabURL = async () => {
   const URL = window.location.href;
@@ -37,7 +38,7 @@ const getData = async () => {
     fullName = loginElement[1].querySelectorAll("td")[1].innerText.trim();
   }
 
-  const data = [];
+  const data: SemesterType[] = [];
 
   Array.from(tableRows).forEach((row, index) => {
     const columns = row.querySelectorAll("td");
@@ -48,7 +49,9 @@ const getData = async () => {
       data.push({
         id: index,
         title: columns[0].innerText,
-        data: []
+        data: [],
+        totalCredit: 0,
+        avgPoint: 0
       });
     }
 
@@ -68,24 +71,24 @@ const getData = async () => {
     .catch((err) => console.error(err));
 };
 
-const setError = (message) => {
-  $(".error-message").innerHTML = message;
-  $(".error-message").classList.remove("hide");
+const setError = (message: string) => {
+  $(".error-message")!.innerHTML = message;
+  $(".error-message")!.classList.remove("hide");
 
   setTimeout(() => {
-    $(".error-message").classList.add("hide");
+    $(".error-message")!.classList.add("hide");
   }, _ERROR_MESSAGE_TIMEOUT);
 };
 
-const showDialog = (semester, action, subject) => {
-  $(".form-subject .title").innerHTML = semester.title;
+const showDialog = (semester: { title: string; idx: number }, action: ActionType, subject?: SubjectType) => {
+  $(".form-subject .title")!.innerHTML = semester.title;
 
-  const formFieldsetLegend = $(".form-subject fieldset legend");
-  const formSubmitBtn = $(".form-subject button.btn-add-subject");
-  const inputList = _$$(".form-subject input");
+  const formFieldsetLegend = $(".form-subject fieldset legend") as HTMLElement;
+  const formSubmitBtn = $(".form-subject button.btn-add-subject") as HTMLElement;
+  const inputList = _$$(".form-subject input") as NodeListOf<HTMLInputElement>;
 
   formSubmitBtn.dataset.action = action;
-  formSubmitBtn.dataset.idx = semester.idx;
+  formSubmitBtn.dataset.idx = semester.idx.toString();
 
   switch (action) {
     case _ACTION_CREATE:
@@ -96,36 +99,37 @@ const showDialog = (semester, action, subject) => {
       formFieldsetLegend.innerHTML = "Cập nhật môn học";
       formSubmitBtn.innerHTML = "Cập nhật";
 
+      if (!subject) break;
+
       inputList[0].value = subject.name;
       inputList[1].value = subject.code;
-      inputList[2].value = subject.credit;
-      inputList[3].value = subject.point;
-
+      inputList[2].value = subject.credit?.toString();
+      inputList[3].value = subject.point?.toString();
       break;
   }
 
-  $(".dialog").classList.add("show");
+  $(".dialog")!.classList.add("show");
 };
 
 const closeDialog = () => {
-  $(".dialog").classList.remove("show");
+  $(".dialog")!.classList.remove("show");
 
   _$$(".form-subject input").forEach((input) => {
-    input.value = "";
+    (input as HTMLInputElement).value = "";
   });
 };
 
 (() => {
-  const capybara = getCapybara();
+  const dataTienichsv: TienichsvDataType = getLocalData(_TIENICHSV_KEY, _TIENICHSV_DEFAULT);
 
   return {
-    fullName: capybara.fullName,
-    userId: capybara.userId,
-    ignoreList: capybara.ignoreList,
-    updatedAt: capybara.updatedAt,
-    data: capybara.data,
-    queyText: capybara.queyText,
-    isOnlyCalcGPA: capybara.isOnlyCalcGPA,
+    fullName: dataTienichsv.fullName,
+    userId: dataTienichsv.userId,
+    ignoreList: dataTienichsv.ignoreList,
+    updatedAt: dataTienichsv.updatedAt,
+    data: dataTienichsv.data,
+    queyText: dataTienichsv.queyText,
+    isOnlyCalcGPA: dataTienichsv.isOnlyCalcGPA,
     subscribe() {
       chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
         const { type, payload } = request;
@@ -134,7 +138,7 @@ const closeDialog = () => {
           case "CHECK_URL": {
             const { URL } = payload;
 
-            const _URL_TIENICHSV_DIEM = _URL_TIENICHSV + "/#/diem";
+            const _URL_TIENICHSV_DIEM = _TIENICHSV_URL + "/#/diem";
 
             if (!URL) {
               setError("Không thể lấy URL của trang hiện tại!");
@@ -146,8 +150,8 @@ const closeDialog = () => {
               return;
             }
 
-            $(".root").classList.remove("hide");
-            $(".btn-import-data").classList.remove("hide");
+            $(".root")!.classList.remove("hide");
+            $(".btn-import-data")!.classList.remove("hide");
             return;
           }
 
@@ -162,7 +166,7 @@ const closeDialog = () => {
             this.updateData(data);
             this.updateTime();
             this.saveDataCurrent();
-            $(".no-data").classList.add("hide");
+            $(".no-data")!.classList.add("hide");
             return;
           }
           default:
@@ -172,7 +176,7 @@ const closeDialog = () => {
       });
     },
     saveDataCurrent() {
-      setCapybara({
+      setLocalData(_TIENICHSV_KEY, {
         fullName: this.fullName,
         userId: this.userId,
         ignoreList: this.ignoreList,
@@ -183,21 +187,23 @@ const closeDialog = () => {
       });
     },
     firstCheck() {
-      if (this.userId && this.fullName && this.data) {
-        $(".no-data").classList.add("hide");
-        $(".btn-import-data").classList.remove("hide");
-        $(".root").classList.remove("hide");
+      const checkDataValid = this.userId && this.fullName && this.data;
+      if (checkDataValid) {
+        $(".no-data")!.classList.add("hide");
+        $(".btn-import-data")!.classList.remove("hide");
+        $(".root")!.classList.remove("hide");
       } else {
         injectScriptActiveTab(getTabURL);
       }
     },
-    updateUser(user) {
+    updateUser(user: UserType) {
       this.fullName = user.fullName;
       this.userId = user.userId;
       this.renderUser();
     },
-    updateData(data = this.data) {
-      this.data = data;
+    updateData(data?: TienichsvDataType["data"] | undefined) {
+      if (data) this.data = data;
+      this.saveDataCurrent();
       this.checkIgnore();
       this.sortData();
       this.getTotal();
@@ -223,13 +229,13 @@ const closeDialog = () => {
         const totalCredit = d.data.reduce((acc, curr) => {
           if (curr.isHead) return acc;
           if (curr.isIgnore) return acc;
-          return acc + parseInt(curr.credit);
+          return acc + curr.credit;
         }, 0);
 
         const avg = d.data.reduce(
           (acc, curr) => {
-            const point = parseFloat(curr.point);
-            const credit = parseInt(curr.credit);
+            const point = curr.point;
+            const credit = curr.credit;
 
             if (curr.isIgnore || isNaN(point) || isNaN(credit)) return acc;
             return {
@@ -244,7 +250,7 @@ const closeDialog = () => {
         );
 
         d.totalCredit = totalCredit;
-        d.avgPoint = (avg.point / avg.credit).toFixed(3);
+        d.avgPoint = parseFloat((avg.point / avg.credit).toFixed(3));
       });
     },
     updateTime() {
@@ -253,11 +259,11 @@ const closeDialog = () => {
     },
     renderUser() {
       if (!this.fullName || !this.userId) return;
-      $(".user-info").innerHTML = `${this.fullName} - ${this.userId}`;
-      $(".user-info").classList.remove("hide");
+      $(".user-info")!.innerHTML = `${this.fullName} - ${this.userId}`;
+      $(".user-info")!.classList.remove("hide");
     },
     renderTime() {
-      $("#updatedAt").innerText = `(Cập nhật ${formatTime(this.updatedAt)})`;
+      $("#updatedAt")!.innerText = `(Cập nhật ${formatTime(this.updatedAt)})`;
     },
     renderData() {
       const tableHtmls = this.data
@@ -266,9 +272,7 @@ const closeDialog = () => {
             const isSearch =
               removeVietnameseTones(item.name.toLowerCase()).includes(this.queyText) || this.queyText == "";
             const isHide = !isSearch || (item.isIgnore && this.isOnlyCalcGPA);
-
             const classValue = `row-data ${item.isIgnore ? "ignore" : ""} ${isHide ? "hide" : ""} `.trim();
-
             return `
             <tr
                 class="${classValue}"
@@ -302,17 +306,17 @@ const closeDialog = () => {
         .join("");
 
       const totalCredit = this.data.reduce((acc, curr) => {
-        return acc + parseInt(curr.totalCredit);
+        return acc + curr.totalCredit;
       }, 0);
 
       const avgTotal = { point: 0, credit: 0 };
 
       this.data.forEach((item) => {
-        if (isNaN(item.avgPoint)) return;
+        if (isNaN(item.avgPoint) || !item.avgPoint) return;
         const avg = item.data.reduce(
           (acc, curr) => {
-            const point = parseFloat(curr.point);
-            const credit = parseInt(curr.credit);
+            const point = curr.point;
+            const credit = curr.credit;
 
             if (curr.isIgnore || isNaN(point) || isNaN(credit)) return acc;
             return {
@@ -330,52 +334,55 @@ const closeDialog = () => {
         avgTotal.credit += avg.credit;
       });
 
-      $("table.data").innerHTML = tableHtmls;
-      $(".total-credit span").innerText = totalCredit;
-      $(".avg-point span").innerText = (avgTotal.point / avgTotal.credit).toFixed(3);
+      $("table.data")!.innerHTML = tableHtmls;
+      $(".total-credit span")!.innerText = totalCredit.toString();
+      $(".avg-point span")!.innerText = (avgTotal.point / avgTotal.credit).toFixed(3);
     },
     handle() {
-      $(".no-data .nav-link").onclick = () => {
+      $(".no-data .nav-link")!.onclick = () => {
         chrome.tabs.update({
-          url: _URL_TIENICHSV + "/#/diem"
+          url: _TIENICHSV_URL + "/#/diem"
         });
       };
 
-      $(".btn-import-data").onclick = () => {
+      $(".btn-import-data")!.onclick = () => {
         injectScriptActiveTab(getTabURL);
         injectScriptActiveTab(getData);
       };
 
-      $("#only-calc-gpa").onchange = (e) => {
-        this.isOnlyCalcGPA = e.target.checked;
+      $("#only-calc-gpa")!.onchange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        this.isOnlyCalcGPA = target.checked;
         this.renderData();
       };
 
-      $("#search-subject").oninput = debounce((e) => {
-        const value = e.target.value.trim().toLowerCase();
+      $("#search-subject")!.oninput = debounce((e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const value = target.value.trim().toLowerCase();
         this.queyText = removeVietnameseTones(value);
         this.renderData();
       });
 
-      $(".dialog").onclick = (e) => {
-        const isDialogBody = e.target.closest(".dialog-body");
-        if (!isDialogBody) {
-          closeDialog();
-        }
+      $(".dialog")!.onclick = (e: Event) => {
+        const target = e.target as HTMLElement;
+        const isDialogBody = target.closest(".dialog-body");
+        !isDialogBody && closeDialog();
       };
 
-      $(".btn-close-dialog").onclick = closeDialog;
+      $(".btn-close-dialog")!.onclick = closeDialog;
 
-      $(".form-subject").onsubmit = (e) => {
+      $(".form-subject")!.onsubmit = (e: SubmitEvent) => {
         e.preventDefault();
-        const action = e.submitter.dataset.action;
-        const idx = parseInt(e.submitter.dataset.idx);
+        const submitter = e.submitter as HTMLButtonElement;
 
-        const inputList = _$$(".form-subject input");
+        const action = submitter.dataset.action;
+        const idx = parseInt(submitter.dataset.idx || "0");
+
+        const inputList = _$$(".form-subject input") as NodeListOf<HTMLInputElement>;
         const name = inputList[0].value.trim();
         const code = inputList[1].value.trim();
-        const credit = inputList[2].value.trim();
-        const point = inputList[3].value.trim();
+        const credit = parseInt(inputList[2].value.trim());
+        const point = parseFloat(inputList[3].value.trim());
 
         if (!name || !code || !credit || !point) {
           setError("Vui lòng điền đầy đủ thông tin!");
@@ -401,14 +408,15 @@ const closeDialog = () => {
         closeDialog();
       };
 
-      $("table.data").onclick = (e) => {
-        const rowData = e.target.closest(".row-data");
-        const deleteBtn = e.target.closest(".btn-delete");
-        const addSubjectButton = e.target.closest(".btn-add-subject");
+      $("table.data")!.onclick = (e: Event) => {
+        const target = e.target as HTMLElement;
+        const rowData = target.closest(".row-data") as HTMLElement;
+        const deleteBtn = target.closest(".btn-delete") as HTMLElement;
+        const addSubjectButton = target.closest(".btn-add-subject") as HTMLElement;
 
         if (deleteBtn) {
-          const groupIdx = parseInt(rowData.dataset.groupIdx);
-          const itemIdx = parseInt(rowData.dataset.itemIdx);
+          const groupIdx = parseInt(rowData.dataset.groupIdx!);
+          const itemIdx = parseInt(rowData.dataset.itemIdx!);
 
           this.data[groupIdx].data.splice(itemIdx, 1);
           this.updateData();
@@ -416,8 +424,8 @@ const closeDialog = () => {
         }
 
         if (rowData) {
-          const groupIdx = parseInt(rowData.dataset.groupIdx);
-          const itemIdx = parseInt(rowData.dataset.itemIdx);
+          const groupIdx = parseInt(rowData.dataset.groupIdx!);
+          const itemIdx = parseInt(rowData.dataset.itemIdx!);
           const semester = this.data[groupIdx];
           const subject = this.data[groupIdx].data[itemIdx];
           showDialog({ title: semester.title, idx: groupIdx }, _ACTION_UPDATE, subject);
@@ -425,9 +433,9 @@ const closeDialog = () => {
         }
 
         if (addSubjectButton) {
-          const rowHead = e.target.closest(".row-head");
-          const semester = this.data[parseInt(rowHead.dataset.groupIdx)];
-          showDialog({ title: semester.title, idx: rowHead.dataset.groupIdx }, _ACTION_CREATE);
+          const rowHead = target.closest(".row-head") as HTMLElement;
+          const semester = this.data[parseInt(rowHead.dataset.groupIdx!)];
+          showDialog({ title: semester.title, idx: parseInt(rowHead.dataset.groupIdx!) }, _ACTION_CREATE);
           return;
         }
       };
