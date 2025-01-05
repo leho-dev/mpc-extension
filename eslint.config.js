@@ -20,9 +20,9 @@ export default [
           argsIgnorePattern: "^_"
         }
       ]
-    },
-    ignores: ["node_modules", "commitlint.config.js", "dist"]
+    }
   },
+  { ignores: ["node_modules", "commitlint.config.js", "dist"] },
   pluginJs.configs.recommended,
   eslintConfigPrettier
 ];
