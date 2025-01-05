@@ -32,10 +32,13 @@ jobs:
       - name: Build project
         run: pnpm build
 
+      - name: Copy configuration to dist
+        run: cp .releaserc dist/
+
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0
         run: |
-          pnpm dlx semantic-release
+          cd dist && pnpm dlx semantic-release
