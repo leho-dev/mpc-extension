@@ -14,8 +14,7 @@ export default {
         "ci", // Changes to our CI configuration files and scripts
         "test", // Adding missing tests or correcting existing tests
         "revert", // Reverts a previous commit
-        "perf", // A code change that improves performance
-        "emotion" // A code change depend on emotion
+        "perf" // A code change that improves performance
       ]
     ]
   }
