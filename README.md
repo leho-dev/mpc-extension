@@ -1,12 +1,19 @@
-### MPC EXTENSION
+# MPC EXTENSION
 
-> Cách sử dụng
+Extension hỗ trợ sinh viên trường Đại học Mở TP. HCM trong việc lên kế hoạch học tập. Công cụ này giúp tối ưu hóa quá trình học tập và lập kế hoạch học tập cá nhân, giúp sinh viên theo dõi kết quả học tập, tính toán điểm trung bình, và lên lộ trình học hiệu quả hơn.
 
-1. Clone hoặc tải xuống file ZIP và giải nén.
-2. Vào trình duyệt lõi Chromium (Chrome, Edge,...) -> Setting -> Extensions -> Manage Extension.
-3. Bật Developer Mode -> Chọn Load unpacked -> Chọn folder.
-4. Vào website tienichsv.ou.edu.vn, chuyển sang tab điểm và nhấn chọn extension.
+## Cách sử dụng
 
-> Cách đóng góp mã nguồn
+Thêm trực tiếp [extension tại Chrome Web Store](https://chromewebstore.google.com/detail/mpc-extension/lidfnknnjlblinmhnbbkbodjkjoheanj).
 
-- Xem tại [CONTRIBUTING.md](https://github.com/leho-dev/mpc-extension/blob/dev/CONTRIBUTING.md)
+## Cách đóng góp mã nguồn
+
+Xem tại [CONTRIBUTING.md](https://github.com/leho-dev/mpc-extension/blob/dev/CONTRIBUTING.md)
+
+## Giấy phép
+
+[GNU](https://choosealicense.com/licenses/gpl-3.0/)
+
+## Tác giả
+
+[@mpc](https://www.facebook.com/CLBLapTrinhTrenThietBiDiDong)
