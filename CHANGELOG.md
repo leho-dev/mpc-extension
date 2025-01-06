@@ -1,3 +1,10 @@
+## [0.1.2](https://github.com/leho-dev/mpc-extension/compare/v0.1.1...v0.1.2) (2025-01-06)
+
+
+### Bug Fixes
+
+* **package:** reinstall package ([d7b6455](https://github.com/leho-dev/mpc-extension/commit/d7b6455429ac8a8852f7489b8b88250d4d2213dc))
+
 ## [0.1.1](https://github.com/leho-dev/mpc-extension/compare/v0.1.0...v0.1.1) (2025-01-06)
 
 ### Bug Fixes
