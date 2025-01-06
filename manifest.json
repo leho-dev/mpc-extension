@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MPC Extension",
-  "version": "0.0.2",
+  "version": "0.1.1",
   "description": "MPC Extension",
   "permissions": ["scripting", "activeTab"],
   "action": {

@@ -1,7 +1,6 @@
 {
   "branches": [
     "main",
-    "dev",
     "release"
   ],
   "plugins": [
@@ -10,6 +9,22 @@
     "@semantic-release/npm",
     "@semantic-release/changelog",
     "@semantic-release/github",
-    "@semantic-release/git"
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "pnpm dlx tsx scripts/updateManifest.ts ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "package.json",
+          "manifest.json",
+          "CHANGELOG.md"
+        ],
+        "message": "chore(release): update version to ${nextRelease.version} [skip ci]"
+      }
+    ]
   ]
 }
