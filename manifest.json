@@ -3,10 +3,7 @@
   "name": "MPC Extension",
   "version": "0.1.1",
   "description": "MPC Extension",
-  "permissions": [
-    "scripting",
-    "activeTab"
-  ],
+  "permissions": ["scripting", "activeTab"],
   "action": {
     "default_popup": "index.html",
     "default_icon": {
