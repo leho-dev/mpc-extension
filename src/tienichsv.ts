@@ -296,7 +296,7 @@ const closeDialog = () => {
               <td colspan="5">
                 <div class="row-wrap">
                   <div class="row-wrap-left"><span>${group.title}</span> <span class="btn btn-add-subject">+</span></div> 
-                  <div class="row-wrap-right">${group.totalCredit} - ${group.avgPoint}</div>
+                  <div class="row-wrap-right">${group.totalCredit} - ${group.avgPoint?.toFixed(3) || NaN}</div>
                 </div>
               </td>
           </tr>
