@@ -6,25 +6,48 @@ import {
   removeVietnameseTones,
   setLocalData
 } from "./utils";
-import { _ACTION_CREATE, _ACTION_UPDATE, _ERROR_MESSAGE_TIMEOUT } from "./constants";
-import { _TIENICHSV_DEFAULT, _TIENICHSV_KEY, _TIENICHSV_URL } from "./constants/tienichsv";
+import {
+  _ACTION_CREATE,
+  _ACTION_UPDATE,
+  _ACTIVE_CLASS,
+  _ERROR_MESSAGE_TIMEOUT,
+  _FLAG_ERROR_KEY,
+  _IGNORE_LIST_KEY,
+  _POINT_KEY,
+  _TIENICHSDH_URL,
+  _TIENICHSV_URL,
+  _USER_KEY
+} from "./constants";
+import { closeDialog, setError, showDialog } from "./utils/globalDOM";
+import { ContainerQS, DialogQS, DialogQSA } from "./utils/query";
+import { _DEFAULT_IGNORE_SUBJECT_DATA, _DEFAULT_POINT_DATA, _DEFAULT_USER_DATA } from "./constants/default";
 
-const $ = (selector: string): HTMLElement | null => document.querySelector(selector);
-const _$$ = (selector: string): NodeListOf<HTMLElement> => document.querySelectorAll(selector);
+type GetURLMessageType = {
+  type: ChromeMessageTypeCategory;
+  payload: { URL: string };
+};
 
 const getTabURL = async () => {
+  const type: ChromeMessageTypeCategory = "CHECK_URL";
   const URL = window.location.href;
 
+  const message: GetURLMessageType = { type: type, payload: { URL } };
+
   await chrome.runtime
-    .sendMessage({
-      type: "CHECK_URL",
-      payload: { URL }
-    })
-    .then(() => console.info("Send message success!"))
+    .sendMessage(message)
+    .then(() => console.info("MPC Extension -> Get URL success and send to the extension!"))
     .catch((err) => console.error(err));
 };
 
+type GetDataPointMessageType = {
+  type: ChromeMessageTypeCategory;
+  payload: {
+    data: SemesterType[];
+  };
+};
+
 const getData = async () => {
+  const type: ChromeMessageTypeCategory = "GET_DATA_POINT";
   const loginElement = document.querySelectorAll("app-login table > tr");
   const tableRows = document.querySelectorAll(
     "table#excel-table > tbody > tr.table-primary.ng-star-inserted, table#excel-table > tbody > tr.text-center.ng-star-inserted"
@@ -65,27 +88,22 @@ const getData = async () => {
     }
   });
 
+  const message: GetDataPointMessageType = { type: type, payload: { data } };
+
   await chrome.runtime
-    .sendMessage({ type: "GET_DATA", payload: { data, user: { userId, fullName } } })
-    .then(() => console.info("Send message success!"))
+    .sendMessage(message)
+    .then(() => console.info("MPC Extension -> Get data success and send to the extension!"))
     .catch((err) => console.error(err));
 };
 
-const setError = (message: string) => {
-  $(".error-message")!.innerHTML = message;
-  $(".error-message")!.classList.remove("hide");
+const showAppDialog = (semester: { title: string; idx: number }, action: ActionCategory, subject?: SubjectType) => {
+  const appDialog = DialogQS("[data-id='app']") as HTMLElement;
 
-  setTimeout(() => {
-    $(".error-message")!.classList.add("hide");
-  }, _ERROR_MESSAGE_TIMEOUT);
-};
+  appDialog.querySelector(".form-subject .title")!.innerHTML = semester.title;
 
-const showDialog = (semester: { title: string; idx: number }, action: ActionType, subject?: SubjectType) => {
-  $(".form-subject .title")!.innerHTML = semester.title;
-
-  const formFieldsetLegend = $(".form-subject fieldset legend") as HTMLElement;
-  const formSubmitBtn = $(".form-subject button.btn-add-subject") as HTMLElement;
-  const inputList = _$$(".form-subject input") as NodeListOf<HTMLInputElement>;
+  const formFieldsetLegend = appDialog.querySelector(".form-subject fieldset legend") as HTMLElement;
+  const formSubmitBtn = appDialog.querySelector(".form-subject button.btn-add-subject") as HTMLElement;
+  const inputList = appDialog.querySelectorAll(".form-subject input") as NodeListOf<HTMLInputElement>;
 
   formSubmitBtn.dataset.action = action;
   formSubmitBtn.dataset.idx = semester.idx.toString();
@@ -108,65 +126,76 @@ const showDialog = (semester: { title: string; idx: number }, action: ActionType
       break;
   }
 
-  $(".dialog")!.classList.add("show");
+  showDialog("app");
 };
 
-const closeDialog = () => {
-  $(".dialog")!.classList.remove("show");
+const App = () => {
+  const pointData: PointDataType = getLocalData(_POINT_KEY, _DEFAULT_POINT_DATA);
+  const ignoreListData: IgnoreListType = getLocalData(_IGNORE_LIST_KEY, _DEFAULT_IGNORE_SUBJECT_DATA);
 
-  _$$(".form-subject input").forEach((input) => {
-    (input as HTMLInputElement).value = "";
-  });
-};
-
-(() => {
-  const dataTienichsv: TienichsvDataType = getLocalData(_TIENICHSV_KEY, _TIENICHSV_DEFAULT);
+  const appContainer = ContainerQS("#app") as HTMLElement;
+  const noDataE = appContainer.querySelector(".no-data") as HTMLElement;
+  const mainDataE = appContainer.querySelector(".main-data") as HTMLElement;
+  const btnImportDataE = appContainer.querySelector(".btn-import-data") as HTMLElement;
+  const updatedAtE = appContainer.querySelector(".updatedAt")! as HTMLElement;
+  const navLinkE = appContainer.querySelector(".no-data .nav-link") as HTMLElement;
+  const checkboxOnlyCalcGPAE = appContainer.querySelector("#only-calc-gpa") as HTMLInputElement;
+  const searchInputE = appContainer.querySelector("#search-subject") as HTMLInputElement;
+  const tableResultE = appContainer.querySelector("table.data") as HTMLElement;
 
   return {
-    fullName: dataTienichsv.fullName,
-    userId: dataTienichsv.userId,
-    ignoreList: dataTienichsv.ignoreList,
-    updatedAt: dataTienichsv.updatedAt,
-    data: dataTienichsv.data,
-    queyText: dataTienichsv.queyText,
-    isOnlyCalcGPA: dataTienichsv.isOnlyCalcGPA,
+    updatedAt: pointData.updatedAt,
+    data: pointData.data,
+    queyText: pointData.queyText,
+    isOnlyCalcGPA: pointData.isOnlyCalcGPA,
     subscribe() {
       chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
         const { type, payload } = request;
 
-        switch (type) {
+        switch (type as ChromeMessageTypeCategory) {
           case "CHECK_URL": {
-            const { URL } = payload;
+            const { URL }: GetURLMessageType["payload"] = payload;
 
             const _URL_TIENICHSV_DIEM = _TIENICHSV_URL + "/#/diem";
+            const _URL_TIENICHSDH_DIEM = _TIENICHSDH_URL + "/#/diem";
+            const availableURL = [_URL_TIENICHSV_DIEM, _URL_TIENICHSDH_DIEM];
 
             if (!URL) {
               setError("Không thể lấy URL của trang hiện tại!");
+              setLocalData(_FLAG_ERROR_KEY, true);
               return;
             }
 
-            if (!URL.includes(_URL_TIENICHSV_DIEM)) {
+            if (!availableURL.includes(URL)) {
+              setLocalData(_FLAG_ERROR_KEY, true);
               setError(`Vui lòng truy cập vào trang <b class="error-nav-link">${_URL_TIENICHSV_DIEM}</b> trước!`);
+              noDataE.classList.add(_ACTIVE_CLASS);
               return;
             }
 
-            $(".root")!.classList.remove("hide");
-            $(".btn-import-data")!.classList.remove("hide");
+            mainDataE.classList.add(_ACTIVE_CLASS);
+            btnImportDataE.classList.add(_ACTIVE_CLASS);
             return;
           }
 
-          case "GET_DATA": {
-            const { data, user } = payload;
-
-            if (!data.length || !user.userId || !user.fullName) {
+          case "GET_DATA_POINT": {
+            const hasError = getLocalData(_FLAG_ERROR_KEY, false);
+            if (hasError) {
+              setLocalData(_FLAG_ERROR_KEY, false);
+              noDataE.classList.remove(_ACTIVE_CLASS);
               return;
             }
 
-            this.updateUser(user);
+            const { data }: GetDataPointMessageType["payload"] = payload;
+
+            if (!data.length) {
+              return;
+            }
+
             this.updateData(data);
             this.updateTime();
             this.saveDataCurrent();
-            $(".no-data")!.classList.add("hide");
+            noDataE.classList.remove(_ACTIVE_CLASS);
             return;
           }
           default:
@@ -175,33 +204,28 @@ const closeDialog = () => {
         }
       });
     },
-    saveDataCurrent() {
-      setLocalData(_TIENICHSV_KEY, {
-        fullName: this.fullName,
-        userId: this.userId,
-        ignoreList: this.ignoreList,
-        updatedAt: this.updatedAt,
-        data: this.data,
-        queyText: this.queyText,
-        isOnlyCalcGPA: this.isOnlyCalcGPA
-      });
-    },
     firstCheck() {
-      const checkDataValid = this.userId && this.fullName && this.data;
+      const checkDataValid = this.data && this.data.length > 0;
       if (checkDataValid) {
-        $(".no-data")!.classList.add("hide");
-        $(".btn-import-data")!.classList.remove("hide");
-        $(".root")!.classList.remove("hide");
+        noDataE.classList.remove(_ACTIVE_CLASS);
+        mainDataE.classList.add(_ACTIVE_CLASS);
+        btnImportDataE.classList.add(_ACTIVE_CLASS);
+
+        searchInputE.value = this.queyText;
+        checkboxOnlyCalcGPAE.checked = this.isOnlyCalcGPA;
       } else {
         injectScriptActiveTab(getTabURL);
       }
     },
-    updateUser(user: UserType) {
-      this.fullName = user.fullName;
-      this.userId = user.userId;
-      this.renderUser();
+    saveDataCurrent() {
+      setLocalData(_POINT_KEY, {
+        data: this.data,
+        queyText: this.queyText,
+        isOnlyCalcGPA: this.isOnlyCalcGPA,
+        updatedAt: this.updatedAt
+      });
     },
-    updateData(data?: TienichsvDataType["data"] | undefined) {
+    updateData(data?: PointDataType["data"] | undefined) {
       if (data) this.data = data;
       this.saveDataCurrent();
       this.checkIgnore();
@@ -212,7 +236,7 @@ const closeDialog = () => {
     checkIgnore() {
       this.data.forEach((d) => {
         d.data.forEach((item) => {
-          const isIgnore = this.ignoreList.find((i) => item.code.includes(i));
+          const isIgnore = ignoreListData.data.find((i) => item.code.includes(i));
           if (isIgnore) item.isIgnore = true;
         });
       });
@@ -257,13 +281,8 @@ const closeDialog = () => {
       this.updatedAt = new Date();
       this.renderTime();
     },
-    renderUser() {
-      if (!this.fullName || !this.userId) return;
-      $(".user-info")!.innerHTML = `${this.fullName} - ${this.userId}`;
-      $(".user-info")!.classList.remove("hide");
-    },
     renderTime() {
-      $("#updatedAt")!.innerText = `(Cập nhật ${formatTime(this.updatedAt)})`;
+      updatedAtE.innerHTML = `(Cập nhật ${formatTime(this.updatedAt)})`;
     },
     renderData() {
       const tableHtmls = this.data
@@ -334,51 +353,45 @@ const closeDialog = () => {
         avgTotal.credit += avg.credit;
       });
 
-      $("table.data")!.innerHTML = tableHtmls;
-      $(".total-credit span")!.innerText = totalCredit.toString();
-      $(".avg-point span")!.innerText = (avgTotal.point / avgTotal.credit).toFixed(3);
+      tableResultE.innerHTML = tableHtmls;
+      appContainer.querySelector(".total-credit span")!.innerHTML = totalCredit.toString();
+      appContainer.querySelector(".avg-point span")!.innerHTML = (avgTotal.point / avgTotal.credit).toFixed(3);
     },
     handle() {
-      $(".no-data .nav-link")!.onclick = () => {
+      navLinkE.onclick = () => {
         chrome.tabs.update({
           url: _TIENICHSV_URL + "/#/diem"
         });
       };
 
-      $(".btn-import-data")!.onclick = () => {
+      btnImportDataE.onclick = () => {
         injectScriptActiveTab(getTabURL);
         injectScriptActiveTab(getData);
       };
 
-      $("#only-calc-gpa")!.onchange = (e: Event) => {
+      checkboxOnlyCalcGPAE.onchange = (e: Event) => {
         const target = e.target as HTMLInputElement;
         this.isOnlyCalcGPA = target.checked;
+        this.saveDataCurrent();
         this.renderData();
       };
 
-      $("#search-subject")!.oninput = debounce((e: Event) => {
+      searchInputE.oninput = debounce((e: Event) => {
         const target = e.target as HTMLInputElement;
         const value = target.value.trim().toLowerCase();
         this.queyText = removeVietnameseTones(value);
+        this.saveDataCurrent();
         this.renderData();
       });
 
-      $(".dialog")!.onclick = (e: Event) => {
-        const target = e.target as HTMLElement;
-        const isDialogBody = target.closest(".dialog-body");
-        !isDialogBody && closeDialog();
-      };
-
-      $(".btn-close-dialog")!.onclick = closeDialog;
-
-      $(".form-subject")!.onsubmit = (e: SubmitEvent) => {
+      DialogQS(".form-subject")!.onsubmit = (e: SubmitEvent) => {
         e.preventDefault();
         const submitter = e.submitter as HTMLButtonElement;
 
         const action = submitter.dataset.action;
         const idx = parseInt(submitter.dataset.idx || "0");
 
-        const inputList = _$$(".form-subject input") as NodeListOf<HTMLInputElement>;
+        const inputList = DialogQSA(".form-subject input") as NodeListOf<HTMLInputElement>;
         const name = inputList[0].value.trim();
         const code = inputList[1].value.trim();
         const credit = parseInt(inputList[2].value.trim());
@@ -408,7 +421,7 @@ const closeDialog = () => {
         closeDialog();
       };
 
-      $("table.data")!.onclick = (e: Event) => {
+      tableResultE.onclick = (e: Event) => {
         const target = e.target as HTMLElement;
         const rowData = target.closest(".row-data") as HTMLElement;
         const deleteBtn = target.closest(".btn-delete") as HTMLElement;
@@ -428,28 +441,28 @@ const closeDialog = () => {
           const itemIdx = parseInt(rowData.dataset.itemIdx!);
           const semester = this.data[groupIdx];
           const subject = this.data[groupIdx].data[itemIdx];
-          showDialog({ title: semester.title, idx: groupIdx }, _ACTION_UPDATE, subject);
+          showAppDialog({ title: semester.title, idx: groupIdx }, _ACTION_UPDATE, subject);
           return;
         }
 
         if (addSubjectButton) {
           const rowHead = target.closest(".row-head") as HTMLElement;
           const semester = this.data[parseInt(rowHead.dataset.groupIdx!)];
-          showDialog({ title: semester.title, idx: parseInt(rowHead.dataset.groupIdx!) }, _ACTION_CREATE);
+          showAppDialog({ title: semester.title, idx: parseInt(rowHead.dataset.groupIdx!) }, _ACTION_CREATE);
           return;
         }
       };
     },
-    start() {
-      // important
+    render() {
       this.subscribe();
       this.handle();
 
       this.firstCheck();
 
-      this.renderUser();
       this.renderData();
       this.renderTime();
     }
   };
-})().start();
+};
+
+export { App };

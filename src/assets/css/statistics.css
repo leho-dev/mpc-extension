@@ -1,0 +1,11 @@
+#statistics {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding: 4px 12px;
+
+  &.active {
+    display: flex;
+  }
+}

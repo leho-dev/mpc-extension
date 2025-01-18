@@ -2,6 +2,7 @@
 
 :root {
   --primary-color: #fb900b;
+  --secondary-color: #343434;
   --text-color: #1c1e21;
   --error-color: #ff4d4f;
   --white-color: #fff;
@@ -45,7 +46,7 @@ body::-webkit-scrollbar {
   width: 0px;
 }
 
-::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 6px;
 }
@@ -75,38 +76,68 @@ body::-webkit-scrollbar {
   color: var(--white-color);
 }
 
-.error-message {
-  color: var(--error-color);
-  padding: 6px 12px;
-  border: 1px solid var(--error-color);
-  border-radius: 5px;
-  text-align: center;
+.hide {
+  display: none;
 }
 
 input {
   padding: 4px 12px;
 }
 
-.hide {
+#nav {
   display: none;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
+  background: var(--secondary-color);
+  color: var(--white-color);
   justify-content: center;
-  width: 100%;
-  padding: 4px 12px;
+  gap: 8px;
+
+  &.active {
+    display: flex;
+  }
+
+  .nav-item {
+    padding: 6px 12px;
+    cursor: pointer;
+
+    &.active {
+      background: var(--primary-color);
+    }
+  }
 }
 
-.footer {
+#container {
+}
+
+#error {
+  display: none;
+
+  &.active {
+    display: block;
+  }
+
+  .error-message {
+    margin-top: 4px;
+    color: var(--error-color);
+    padding: 6px 12px;
+    border: 1px solid var(--error-color);
+    border-radius: 5px;
+    text-align: center;
+  }
+}
+
+#footer {
   margin-top: 12px;
   text-align: center;
   padding: 4px 12px;
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
+  color: var(--white-color);
+
+  a {
+    color: var(--primary-color);
+  }
 }
 
-.dialog {
+#dialog {
   position: fixed;
   left: 0;
   right: 0;
@@ -117,15 +148,15 @@ input {
   justify-content: center;
   align-items: center;
   z-index: 99;
-}
 
-.dialog.show {
-  display: flex;
-}
+  &.active {
+    display: flex;
+  }
 
-.dialog-body {
-  padding: 20px 12px;
-  border-radius: var(--radius);
-  background: var(--white-color);
-  width: 90%;
+  .dialog-body {
+    padding: 20px 12px;
+    border-radius: var(--radius);
+    background: var(--white-color);
+    width: 90%;
+  }
 }

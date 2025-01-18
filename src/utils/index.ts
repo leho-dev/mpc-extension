@@ -11,7 +11,7 @@ export const injectScriptActiveTab = (injectScript: () => void) => {
         target: { tabId: tab.id as number },
         func: injectScript
       })
-      .then(() => console.info("Injected JS!"))
+      .then(() => console.info("Injected JS to the active tab!"))
       .catch((err) => console.error(err));
   });
 };
@@ -48,7 +48,7 @@ export function formatTime(time: Date) {
   };
 
   const date = new Date(time);
-  return date.toLocaleString("en-US", options);
+  return date.toLocaleString("vi-VN", options);
 }
 
 // localStorage
