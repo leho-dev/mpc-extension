@@ -9,22 +9,6 @@
     display: flex;
   }
 
-  .no-data {
-    display: none;
-    margin: 8px;
-    white-space: nowrap;
-    text-align: center;
-
-    &.active {
-      display: block;
-    }
-
-    .nav-link {
-      font-weight: bold;
-      cursor: pointer;
-    }
-  }
-
   .main-data {
     display: none;
 

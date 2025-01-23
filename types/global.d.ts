@@ -1,22 +1,28 @@
 type ParentItemCategory = "#dialog" | "#nav" | "#error" | "#container" | "#footer";
 type ContainerItemCategory = "app" | "info" | "statistics" | "settings";
-type ChromeMessageTypeCategory = "CHECK_URL" | "GET_DATA_POINT";
+type ChromeMessageTypeCategory = "CHECK_URL" | "GET_DATA_POINT" | "GET_DATA_USER_COURSE";
 type ActionCategory = "create" | "update";
+type UserLabelMappingType = {
+  [K in keyof UserType]: string;
+};
+type CourseLabelMappingType = {
+  [K in keyof CourseType]: string;
+};
 
 type UserType = {
   userId: string;
   fullName: string;
-  dateOfBirth?: string;
-  gender?: string;
-  phone?: string;
-  identityNumber?: string;
-  email?: string;
-  placeOfBirth?: string;
-  ethnicity?: string;
-  religion?: string;
-  presenceStatus?: string;
-  residentialAddress?: string;
-  userType?: string;
+  dateOfBirth: string;
+  gender: string;
+  phone: string;
+  identityNumber: string;
+  email: string;
+  placeOfBirth: string;
+  ethnicity: string;
+  religion: string;
+  presenceStatus: string;
+  residentialAddress: string;
+  userType: string;
   updatedAt: Date;
 };
 

@@ -8,4 +8,34 @@
   &.active {
     display: flex;
   }
+
+  .main-data {
+    display: none;
+
+    &.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btn-import-data {
+      margin: 8px auto 0;
+    }
+
+    .updatedAt {
+      text-align: center;
+      font-style: italic;
+      color: #89a0ac;
+      font-size: 1.4rem;
+      margin-top: 8px;
+    }
+  }
+
+  .result {
+    .title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+  }
 }

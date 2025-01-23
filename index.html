@@ -13,7 +13,7 @@
 
   <body>
     <nav id="nav" class="nav active">
-      <div data-id="app" class="nav-item active">Tính điểm</div>
+      <div data-id="app" class="nav-item">Tính điểm</div>
       <div data-id="info" class="nav-item">Thông tin</div>
       <div data-id="statistics" class="nav-item">Thống kê</div>
       <div data-id="settings" class="nav-item">Cài đặt</div>
@@ -52,7 +52,28 @@
         </div>
       </section>
       <section id="info" class="info">
-        <div>Thông tin người dùng (Đang phát triển)</div>
+        <div class="no-data">
+          <div>Không có dữ liệu được lưu!</div>
+          <div>
+            Vui lòng chuyển sang
+            <b title="Hoặc https://tienichsdh.ou.edu.vn/#/userinfo" class="nav-link"
+              >https://tienichsv.ou.edu.vn/#/userinfo</b
+            >
+            để lưu thông tin mới nhất!
+          </div>
+        </div>
+        <div class="main-data">
+          <button class="btn btn-active btn-import-data">Nhập dữ liệu mới</button>
+          <div class="updatedAt"></div>
+
+          <div class="result">
+            <h5 class="title">Thông tin người dùng</h5>
+            <table border="1" class="user"></table>
+
+            <h5 class="title">Thông tin khoá học</h5>
+            <table border="1" class="user"></table>
+          </div>
+        </div>
       </section>
       <section id="statistics" class="statistics">
         <div>Thống kê (Đang phát triển)</div>

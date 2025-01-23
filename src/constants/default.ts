@@ -22,6 +22,17 @@ export const _DEFAULT_POINT_DATA: PointDataType = {
 export const _DEFAULT_USER_DATA: UserType = {
   userId: "",
   fullName: "",
+  dateOfBirth: "",
+  gender: "",
+  phone: "",
+  identityNumber: "",
+  email: "",
+  placeOfBirth: "",
+  ethnicity: "",
+  religion: "",
+  presenceStatus: "",
+  residentialAddress: "",
+  userType: "",
   updatedAt: new Date()
 };
 

@@ -16,3 +16,30 @@ export const _USER_KEY = "user" as const;
 export const _COURSE_KEY = "course" as const;
 export const _IGNORE_LIST_KEY = "ignoreList" as const;
 export const _FLAG_ERROR_KEY = "flagError" as const;
+export const _CURR_TAB_KEY = "currTab" as const;
+
+export const _USER_LABEL_MAPPING: UserLabelMappingType = {
+  userId: "Mã số sinh viên",
+  fullName: "Họ và tên",
+  dateOfBirth: "Ngày sinh",
+  gender: "Giới tính",
+  phone: "Số điện thoại",
+  identityNumber: "Số CMND",
+  email: "Email",
+  placeOfBirth: "Nơi sinh",
+  ethnicity: "Dân tộc",
+  religion: "Tôn giáo",
+  presenceStatus: "Tình trạng học tập",
+  residentialAddress: "Địa chỉ thường trú",
+  userType: "Đối tượng",
+  updatedAt: "Cập nhật"
+};
+
+export const _COURSE_LABEL_MAPPING: CourseLabelMappingType = {
+  classCode: "Mã lớp",
+  major: "Ngành",
+  faculty: "Khoa",
+  degreeProgram: "Chương trình đào tạo",
+  academicYear: "Niên khóa",
+  updatedAt: "Cập nhật"
+};

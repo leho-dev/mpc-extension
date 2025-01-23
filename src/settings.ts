@@ -1,5 +1,7 @@
 const Settings = () => {
   return {
+    subscribe() {},
+    unsubscribe() {},
     handle() {},
     render() {}
   };

@@ -18,26 +18,9 @@ import {
   _TIENICHSV_URL,
   _USER_KEY
 } from "./constants";
-import { closeDialog, setError, showDialog } from "./utils/globalDOM";
+import { closeDialog, getTabURL, GetURLMessageType, removeError, setError, showDialog } from "./utils/globalDOM";
 import { ContainerQS, DialogQS, DialogQSA } from "./utils/query";
 import { _DEFAULT_IGNORE_SUBJECT_DATA, _DEFAULT_POINT_DATA, _DEFAULT_USER_DATA } from "./constants/default";
-
-type GetURLMessageType = {
-  type: ChromeMessageTypeCategory;
-  payload: { URL: string };
-};
-
-const getTabURL = async () => {
-  const type: ChromeMessageTypeCategory = "CHECK_URL";
-  const URL = window.location.href;
-
-  const message: GetURLMessageType = { type: type, payload: { URL } };
-
-  await chrome.runtime
-    .sendMessage(message)
-    .then(() => console.info("MPC Extension -> Get URL success and send to the extension!"))
-    .catch((err) => console.error(err));
-};
 
 type GetDataPointMessageType = {
   type: ChromeMessageTypeCategory;
@@ -48,18 +31,9 @@ type GetDataPointMessageType = {
 
 const getData = async () => {
   const type: ChromeMessageTypeCategory = "GET_DATA_POINT";
-  const loginElement = document.querySelectorAll("app-login table > tr");
   const tableRows = document.querySelectorAll(
     "table#excel-table > tbody > tr.table-primary.ng-star-inserted, table#excel-table > tbody > tr.text-center.ng-star-inserted"
   );
-
-  let fullName = "";
-  let userId = "";
-
-  if (loginElement.length > 0) {
-    userId = loginElement[0].querySelectorAll("td")[1].innerText.trim();
-    fullName = loginElement[1].querySelectorAll("td")[1].innerText.trim();
-  }
 
   const data: SemesterType[] = [];
 
@@ -143,17 +117,24 @@ const App = () => {
   const searchInputE = appContainer.querySelector("#search-subject") as HTMLInputElement;
   const tableResultE = appContainer.querySelector("table.data") as HTMLElement;
 
+  let listener: (
+    request: { type: ChromeMessageTypeCategory; payload: any },
+    _sender: chrome.runtime.MessageSender,
+    _sendResponse: (response: any) => void
+  ) => void;
+
   return {
     updatedAt: pointData.updatedAt,
     data: pointData.data,
     queyText: pointData.queyText,
     isOnlyCalcGPA: pointData.isOnlyCalcGPA,
     subscribe() {
-      chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
+      listener = (request, _sender, _sendResponse) => {
         const { type, payload } = request;
 
         switch (type as ChromeMessageTypeCategory) {
           case "CHECK_URL": {
+            console.info("[app.ts:137] ", "app");
             const { URL }: GetURLMessageType["payload"] = payload;
 
             const _URL_TIENICHSV_DIEM = _TIENICHSV_URL + "/#/diem";
@@ -194,7 +175,7 @@ const App = () => {
 
             this.updateData(data);
             this.updateTime();
-            this.saveDataCurrent();
+            this.saveDataToLocal();
             noDataE.classList.remove(_ACTIVE_CLASS);
             return;
           }
@@ -202,7 +183,11 @@ const App = () => {
             console.error("No type match!");
             return;
         }
-      });
+      };
+      chrome.runtime.onMessage.addListener(listener);
+    },
+    unsubscribe() {
+      chrome.runtime.onMessage.removeListener(listener);
     },
     firstCheck() {
       const checkDataValid = this.data && this.data.length > 0;
@@ -217,7 +202,7 @@ const App = () => {
         injectScriptActiveTab(getTabURL);
       }
     },
-    saveDataCurrent() {
+    saveDataToLocal() {
       setLocalData(_POINT_KEY, {
         data: this.data,
         queyText: this.queyText,
@@ -227,7 +212,7 @@ const App = () => {
     },
     updateData(data?: PointDataType["data"] | undefined) {
       if (data) this.data = data;
-      this.saveDataCurrent();
+      this.saveDataToLocal();
       this.checkIgnore();
       this.sortData();
       this.getTotal();
@@ -372,7 +357,7 @@ const App = () => {
       checkboxOnlyCalcGPAE.onchange = (e: Event) => {
         const target = e.target as HTMLInputElement;
         this.isOnlyCalcGPA = target.checked;
-        this.saveDataCurrent();
+        this.saveDataToLocal();
         this.renderData();
       };
 
@@ -380,7 +365,7 @@ const App = () => {
         const target = e.target as HTMLInputElement;
         const value = target.value.trim().toLowerCase();
         this.queyText = removeVietnameseTones(value);
-        this.saveDataCurrent();
+        this.saveDataToLocal();
         this.renderData();
       });
 
@@ -454,11 +439,8 @@ const App = () => {
       };
     },
     render() {
-      this.subscribe();
-      this.handle();
-
       this.firstCheck();
-
+      this.handle();
       this.renderData();
       this.renderTime();
     }
