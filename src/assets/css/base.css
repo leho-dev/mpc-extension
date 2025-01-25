@@ -117,7 +117,7 @@ input {
         display: block;
       }
 
-      .nav-link {
+      .redirect-link {
         font-weight: bold;
         cursor: pointer;
       }

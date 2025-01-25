@@ -2,16 +2,13 @@ import { App } from "./app";
 import { Info } from "./info";
 import { Settings } from "./settings";
 import { Statistics } from "./statistics";
-import { _CURR_TAB_KEY, _ERROR_MESSAGE_TIMEOUT, _IGNORE_LIST_KEY } from "./constants";
+import { _ACTIVE_CLASS, _CURR_TAB_KEY, _ERROR_MESSAGE_TIMEOUT, _IGNORE_LIST_KEY } from "./constants";
 import { _DEFAULT_COMPONENT, _DEFAULT_IGNORE_SUBJECT_DATA } from "./constants/default";
 import { ContainerQS, ContainerQSA, DialogQS, NavQS, NavQSA } from "./utils/query";
 import { closeDialog, removeError } from "./utils/globalDOM";
 import { getLocalData, setLocalData } from "./utils";
 
-type ComponentMappingType = Record<
-  ContainerItemCategory,
-  { render: () => void; unsubscribe: () => void; subscribe: () => void }
->;
+type ComponentMappingType = Record<ContainerItemCategory, { unsubscribe: () => void; subscribe: () => void }>;
 
 (() => {
   const currTab = getLocalData(_CURR_TAB_KEY, _DEFAULT_COMPONENT) as ContainerItemCategory;
@@ -30,39 +27,57 @@ type ComponentMappingType = Record<
 
   const navItems = NavQSA(".nav-item");
   const components = ContainerQSA("section");
+  const redirectLinksE = ContainerQSA(".redirect-link");
 
   DialogQS()!.onclick = (e: Event) => {
     const target = e.target as HTMLElement;
     const isDialogBody = target.closest(".dialog-body");
     !isDialogBody && closeDialog();
   };
-
   DialogQS(".btn-close-dialog")!.onclick = closeDialog;
 
-  navItems.forEach((navItem) => {
-    navItem.onclick = (e: Event) => {
-      const currItem = NavQS(".nav-item.active");
-      if (currItem === e.target) return;
+  const eventHandlers = () => {
+    redirectLinksE.forEach((redirectLink) => {
+      redirectLink.onclick = (e: Event) => {
+        const target = e.target as HTMLElement;
+        const url = target.dataset.url as string;
+        chrome.tabs.update({ url });
+      };
+    });
 
-      navItems.forEach((navItem) => navItem.classList.remove("active"));
-      components.forEach((component) => component.classList.remove("active"));
+    navItems.forEach((navItem) => {
+      navItem.onclick = (e: Event) => {
+        const itemActiveCurr = NavQS(".nav-item.active");
+        const itemCurr = e.target as HTMLElement;
+        if (itemActiveCurr === itemCurr) return;
 
-      const item = e.target as HTMLElement;
-      item.classList.add("active");
+        navItems.forEach((navItem) => navItem.classList.remove(_ACTIVE_CLASS));
+        components.forEach((component) => component.classList.remove(_ACTIVE_CLASS));
 
-      const componentId = item.dataset.id as ContainerItemCategory;
-      const component = componentMapping[componentId];
+        itemCurr.classList.add(_ACTIVE_CLASS);
 
-      const currentComponent = componentMapping[currItem!.dataset.id as ContainerItemCategory];
+        const newComponentId = itemCurr.dataset.id as ContainerItemCategory;
+        const oldComponentId = itemActiveCurr!.dataset.id as ContainerItemCategory;
 
-      currentComponent.unsubscribe();
+        removeOldComponent(oldComponentId);
+        initNewComponent(newComponentId);
+      };
+    });
+
+    const removeOldComponent = (componentId: ContainerItemCategory) => {
+      const oldComponent = componentMapping[componentId];
+      oldComponent.unsubscribe();
       removeError();
+    };
+
+    const initNewComponent = (componentId: ContainerItemCategory) => {
       ContainerQS("section#" + componentId)?.classList.add("active");
       setLocalData(_CURR_TAB_KEY, componentId);
-      component.subscribe();
-      component.render();
+
+      const newComponent = componentMapping[componentId];
+      newComponent.subscribe();
     };
-  });
+  };
 
   const defaultSettings = () => {
     const hasIgnoreData = getLocalData(_IGNORE_LIST_KEY, []);
@@ -78,11 +93,11 @@ type ComponentMappingType = Record<
     NavQS(".nav-item[data-id=" + currTab + "]")?.classList.add("active");
     ContainerQS("section#" + currTab)?.classList.add("active");
     componentMapping[currTab].subscribe();
-    componentMapping[currTab].render();
   };
 
   return {
     start() {
+      eventHandlers();
       defaultSettings();
       defaultRender();
     }

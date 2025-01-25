@@ -19,19 +19,18 @@ export const _FLAG_ERROR_KEY = "flagError" as const;
 export const _CURR_TAB_KEY = "currTab" as const;
 
 export const _USER_LABEL_MAPPING: UserLabelMappingType = {
-  userId: "Mã số sinh viên",
+  userId: "Mã SV",
   fullName: "Họ và tên",
   dateOfBirth: "Ngày sinh",
   gender: "Giới tính",
-  phone: "Số điện thoại",
-  identityNumber: "Số CMND",
+  phone: "Điện thoại",
+  identityNumber: "Số CMND/CCCD",
   email: "Email",
   placeOfBirth: "Nơi sinh",
   ethnicity: "Dân tộc",
   religion: "Tôn giáo",
-  presenceStatus: "Tình trạng học tập",
-  residentialAddress: "Địa chỉ thường trú",
-  userType: "Đối tượng",
+  presenceStatus: "Hiện diện",
+  residentialAddress: "Hộ khẩu",
   updatedAt: "Cập nhật"
 };
 

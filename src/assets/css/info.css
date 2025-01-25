@@ -36,6 +36,48 @@
       font-size: 1.4rem;
       font-weight: bold;
       margin-bottom: 8px;
+      margin-top: 12px;
+      text-transform: uppercase;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      user-select: text;
+
+      td {
+        padding: 2px 4px;
+
+        &:not(:first-child, :nth-child(2)) {
+          text-align: center;
+        }
+      }
+
+      .row-data {
+        &.ignore {
+          background-color: #e3e3e3;
+        }
+
+        &:hover {
+          cursor: pointer;
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-delete:hover {
+          color: red;
+          font-weight: bold;
+        }
+      }
+
+      .row-head {
+        background-color: #bad5e4;
+        font-weight: bold;
+
+        .row-wrap {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
     }
   }
 }

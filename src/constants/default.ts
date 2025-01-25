@@ -32,7 +32,6 @@ export const _DEFAULT_USER_DATA: UserType = {
   religion: "",
   presenceStatus: "",
   residentialAddress: "",
-  userType: "",
   updatedAt: new Date()
 };
 

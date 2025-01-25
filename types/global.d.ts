@@ -22,7 +22,6 @@ type UserType = {
   religion: string;
   presenceStatus: string;
   residentialAddress: string;
-  userType: string;
   updatedAt: Date;
 };
 
