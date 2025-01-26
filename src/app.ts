@@ -30,44 +30,48 @@ type GetDataPointMessageType = {
 };
 
 const getData = async () => {
-  const type: ChromeMessageTypeCategory = "GET_DATA_POINT";
-  const tableRows = document.querySelectorAll(
-    "table#excel-table > tbody > tr.table-primary.ng-star-inserted, table#excel-table > tbody > tr.text-center.ng-star-inserted"
-  );
+  try {
+    const type: ChromeMessageTypeCategory = "GET_DATA_POINT";
+    const tableRows = document.querySelectorAll(
+      "table#excel-table > tbody > tr.table-primary.ng-star-inserted, table#excel-table > tbody > tr.text-center.ng-star-inserted"
+    );
 
-  const data: SemesterType[] = [];
+    const data: SemesterType[] = [];
 
-  Array.from(tableRows).forEach((row, index) => {
-    const columns = row.querySelectorAll("td");
+    Array.from(tableRows).forEach((row, index) => {
+      const columns = row.querySelectorAll("td");
 
-    const isHead = row.classList.contains("table-primary");
+      const isHead = row.classList.contains("table-primary");
 
-    if (isHead) {
-      data.push({
-        id: index,
-        title: columns[0].innerText,
-        data: [],
-        totalCredit: 0,
-        avgPoint: 0
-      });
-    }
+      if (isHead) {
+        data.push({
+          id: index,
+          title: columns[0].innerText,
+          data: [],
+          totalCredit: 0,
+          avgPoint: 0
+        });
+      }
 
-    if (!isHead) {
-      data[data.length - 1].data.push({
-        code: columns[1].innerText,
-        name: columns[3].innerText,
-        credit: parseFloat(columns[4].innerText) || 0,
-        point: parseFloat(columns[10].innerText)
-      });
-    }
-  });
+      if (!isHead) {
+        data[data.length - 1].data.push({
+          code: columns[1].innerText,
+          name: columns[3].innerText,
+          credit: parseFloat(columns[4].innerText) || 0,
+          point: parseFloat(columns[10].innerText)
+        });
+      }
+    });
 
-  const message: GetDataPointMessageType = { type: type, payload: { data } };
+    const message: GetDataPointMessageType = { type: type, payload: { data } };
 
-  await chrome.runtime
-    .sendMessage(message)
-    .then(() => console.info("MPC Extension -> Get data success and send to the extension!"))
-    .catch((err) => console.error(err));
+    await chrome.runtime
+      .sendMessage(message)
+      .then(() => console.info("MPC Extension -> Get data success and send to the extension!"))
+      .catch((err) => console.error(err));
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const App = () => {
@@ -78,6 +82,7 @@ const App = () => {
   const noDataE = appContainer.querySelector(".no-data") as HTMLElement;
   const mainDataE = appContainer.querySelector(".main-data") as HTMLElement;
   const btnImportDataE = appContainer.querySelector(".btn-import-data") as HTMLElement;
+  const btnExportExcelE = appContainer.querySelector(".btn-export-excel") as HTMLElement;
   const updatedAtE = appContainer.querySelector(".updatedAt")! as HTMLElement;
   const checkboxOnlyCalcGPAE = appContainer.querySelector("#only-calc-gpa") as HTMLInputElement;
   const searchInputE = appContainer.querySelector("#search-subject") as HTMLInputElement;
@@ -156,10 +161,6 @@ const App = () => {
     };
 
     chrome.runtime.onMessage.addListener(listener);
-
-    firstCheck();
-    eventHandlers();
-    renderData();
   };
 
   const unsubscribe = () => {
@@ -208,11 +209,11 @@ const App = () => {
 
   const updateData = (data?: PointDataType["data"] | undefined) => {
     if (data) state.data = data;
-    saveDataToLocal();
     checkIgnore();
     sortDataByIgnore();
     getTotal();
     renderData();
+    saveDataToLocal();
   };
 
   const getTotal = () => {
@@ -275,7 +276,7 @@ const App = () => {
           <tr class="row-head" data-group-idx=${groupIdx}>
               <td colspan="5">
                 <div class="row-wrap">
-                  <div class="row-wrap-left"><span>${group.title}</span> <span class="btn btn-add-subject">+</span></div> 
+                  <div class="row-wrap-left"><span>${group.title}</span> <span title="Thêm môn học" class="btn btn-add-subject">+</span></div> 
                   <div class="row-wrap-right">${group.totalCredit} - ${group.avgPoint?.toFixed(3) || NaN}</div>
                 </div>
               </td>
@@ -357,6 +358,51 @@ const App = () => {
     btnImportDataE.onclick = () => {
       injectScriptActiveTab(getTabURL);
       injectScriptActiveTab(getData);
+    };
+
+    btnExportExcelE.onclick = () => {
+      const worksheetData = [];
+
+      worksheetData.push([
+        "STT",
+        "Học kỳ",
+        "Mã môn học",
+        "Tên môn học",
+        "Số tín chỉ",
+        "Điểm",
+        "Ghi chú (Không tính GPA)"
+      ]);
+
+      let stt = 1;
+      state.data.forEach((semester) => {
+        semester.data.forEach((subject) => {
+          worksheetData.push([
+            stt++,
+            semester.title,
+            subject.code,
+            subject.name,
+            subject.credit,
+            subject.point ?? "N/A",
+            subject.isIgnore ? "Không tính" : ""
+          ]);
+        });
+      });
+
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+      worksheet["!cols"] = [
+        { width: 5 },
+        { width: 30 },
+        { width: 15 },
+        { width: 50 },
+        { width: 10 },
+        { width: 10 },
+        { width: 20 }
+      ];
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Bảng điểm");
+      XLSX.writeFile(workbook, "points.xlsx");
     };
 
     checkboxOnlyCalcGPAE.onchange = (e: Event) => {
@@ -445,8 +491,16 @@ const App = () => {
   };
 
   return {
-    subscribe,
-    unsubscribe
+    onMount() {
+      subscribe();
+
+      firstCheck();
+      eventHandlers();
+      renderData();
+    },
+    onUnmount() {
+      unsubscribe();
+    }
   };
 };
 

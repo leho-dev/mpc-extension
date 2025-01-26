@@ -16,56 +16,74 @@ import { ContainerQS } from "./utils/query";
 type GetDataPointMessageType = {
   type: ChromeMessageTypeCategory;
   payload: {
-    userData: UserType;
-    courseData: CourseType;
+    userData: UserType | null;
+    courseData: CourseType | null;
   };
 };
 
 const getData = async () => {
-  const type: ChromeMessageTypeCategory = "GET_DATA_USER_COURSE";
-  const appUserElement = document.querySelector("app-userinfo > div > div > div") as HTMLElement;
+  try {
+    const type: ChromeMessageTypeCategory = "GET_DATA_USER_COURSE";
+    const appUserElement = document.querySelector("app-userinfo > div > div > div") as HTMLElement;
 
-  const userInfoElement = appUserElement.querySelectorAll("div.card")[0] as HTMLElement;
-  const courseInfoElement = appUserElement.querySelectorAll("div.card")[1] as HTMLElement;
+    if (!appUserElement) {
+      const message: GetDataPointMessageType = {
+        type: type,
+        payload: { userData: null, courseData: null }
+      };
 
-  const userInfoValues: NodeListOf<HTMLElement> = userInfoElement.querySelectorAll(
-    ".container-fluid > .row > div:first-child > .row > div:last-child"
-  );
-  const courseInfoValues: NodeListOf<HTMLElement> = courseInfoElement.querySelectorAll(
-    ".container-fluid > .row > div:first-child > .row > div:last-child"
-  );
+      await chrome.runtime
+        .sendMessage(message)
+        .then(() => console.info("MPC Extension -> Not found (appUserElement) and send to the extension!"))
+        .catch((err) => console.error(err));
 
-  const userData: UserType = {
-    userId: userInfoValues[0]?.innerText || "",
-    fullName: userInfoValues[1]?.innerText || "",
-    dateOfBirth: userInfoValues[2]?.innerText || "",
-    gender: userInfoValues[3]?.innerText || "",
-    phone: userInfoValues[4]?.innerText || "",
-    identityNumber: userInfoValues[5]?.innerText || "",
-    email: userInfoValues[6]?.innerText || "",
-    placeOfBirth: userInfoValues[7]?.innerText || "",
-    ethnicity: userInfoValues[8]?.innerText || "",
-    religion: userInfoValues[9]?.innerText || "",
-    presenceStatus: userInfoValues[10]?.innerText || "",
-    residentialAddress: userInfoValues[11]?.innerText || "",
-    updatedAt: new Date()
-  };
+      return;
+    }
 
-  const courseData: CourseType = {
-    classCode: courseInfoValues[0]?.innerText || "",
-    major: courseInfoValues[1]?.innerText || "",
-    faculty: courseInfoValues[2]?.innerText || "",
-    degreeProgram: courseInfoValues[3]?.innerText || "",
-    academicYear: courseInfoValues[4]?.innerText || "",
-    updatedAt: new Date()
-  };
+    const userInfoElement = appUserElement.querySelectorAll("div.card")[0] as HTMLElement;
+    const courseInfoElement = appUserElement.querySelectorAll("div.card")[1] as HTMLElement;
 
-  const message: GetDataPointMessageType = { type: type, payload: { userData, courseData } };
+    const userInfoValues: NodeListOf<HTMLElement> = userInfoElement.querySelectorAll(
+      ".container-fluid > .row > div:first-child > .row > div:last-child"
+    );
+    const courseInfoValues: NodeListOf<HTMLElement> = courseInfoElement.querySelectorAll(
+      ".container-fluid > .row > div:first-child > .row > div:last-child"
+    );
 
-  await chrome.runtime
-    .sendMessage(message)
-    .then(() => console.info("MPC Extension -> Get data success and send to the extension!"))
-    .catch((err) => console.error(err));
+    const userData: UserType = {
+      userId: userInfoValues[0]?.innerText || "",
+      fullName: userInfoValues[1]?.innerText || "",
+      dateOfBirth: userInfoValues[2]?.innerText || "",
+      gender: userInfoValues[3]?.innerText || "",
+      phone: userInfoValues[4]?.innerText || "",
+      identityNumber: userInfoValues[5]?.innerText || "",
+      email: userInfoValues[6]?.innerText || "",
+      placeOfBirth: userInfoValues[7]?.innerText || "",
+      ethnicity: userInfoValues[8]?.innerText || "",
+      religion: userInfoValues[9]?.innerText || "",
+      presenceStatus: userInfoValues[10]?.innerText || "",
+      residentialAddress: userInfoValues[11]?.innerText || "",
+      updatedAt: new Date()
+    };
+
+    const courseData: CourseType = {
+      classCode: courseInfoValues[0]?.innerText || "",
+      major: courseInfoValues[1]?.innerText || "",
+      faculty: courseInfoValues[2]?.innerText || "",
+      degreeProgram: courseInfoValues[3]?.innerText || "",
+      academicYear: courseInfoValues[4]?.innerText || "",
+      updatedAt: new Date()
+    };
+
+    const message: GetDataPointMessageType = { type: type, payload: { userData, courseData } };
+
+    await chrome.runtime
+      .sendMessage(message)
+      .then(() => console.info("MPC Extension -> Get data success and send to the extension!"))
+      .catch((err) => console.error(err));
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const Info = () => {
@@ -76,6 +94,7 @@ const Info = () => {
   const noDataE = infoContainer.querySelector(".no-data") as HTMLElement;
   const mainDataE = infoContainer.querySelector(".main-data") as HTMLElement;
   const btnImportDataE = infoContainer.querySelector(".btn-import-data") as HTMLElement;
+  const btnExportExcelE = infoContainer.querySelector(".btn-export-excel") as HTMLElement;
   const resultE = infoContainer.querySelector(".result") as HTMLElement;
   const userTableE = resultE.querySelector("table.user") as HTMLElement;
   const courseTableE = resultE.querySelector("table.course") as HTMLElement;
@@ -148,10 +167,6 @@ const Info = () => {
     };
 
     chrome.runtime.onMessage.addListener(listener);
-
-    firstCheck();
-    eventHandlers();
-    renderData();
   };
 
   const unsubscribe = () => {
@@ -218,11 +233,48 @@ const Info = () => {
       injectScriptActiveTab(getTabURL);
       injectScriptActiveTab(getData);
     };
+
+    const createSheet = (data: any, mapping: UserLabelMappingType | CourseLabelMappingType) => {
+      const worksheetData = [];
+      worksheetData.push(["Trường", "Giá trị"]);
+
+      Object.entries(mapping).forEach(([key, label]) => {
+        let value = data[key];
+        if (key === "updatedAt" && value) {
+          value = new Date(value).toLocaleString("vi-VN");
+        }
+        worksheetData.push([label, value || "N/A"]);
+      });
+
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+      worksheet["!cols"] = [{ width: 30 }, { width: 50 }];
+      return worksheet;
+    };
+
+    btnExportExcelE.onclick = () => {
+      const workbook = XLSX.utils.book_new();
+
+      const userWorksheet = createSheet(state.user, _USER_LABEL_MAPPING);
+      XLSX.utils.book_append_sheet(workbook, userWorksheet, "Thông tin cá nhân");
+
+      const classWorksheet = createSheet(state.course, _COURSE_LABEL_MAPPING);
+      XLSX.utils.book_append_sheet(workbook, classWorksheet, "Thông tin lớp học");
+
+      XLSX.writeFile(workbook, "userInfo.xlsx");
+    };
   };
 
   return {
-    subscribe,
-    unsubscribe
+    onMount() {
+      subscribe();
+
+      firstCheck();
+      eventHandlers();
+      renderData();
+    },
+    onUnmount() {
+      unsubscribe();
+    }
   };
 };
 

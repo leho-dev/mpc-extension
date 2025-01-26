@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdnjs.cloudflare.com;" />
     <title>MPC Extension</title>
     <link rel="stylesheet" href="./src/assets/css/base.css" />
     <link rel="stylesheet" href="./src/assets/css/app.css" />
     <link rel="stylesheet" href="./src/assets/css/info.css" />
     <link rel="stylesheet" href="./src/assets/css/statistics.css" />
-    <link rel="stylesheet" href="./src/assets/css/settings.css" />
   </head>
 
   <body>
@@ -16,7 +16,6 @@
       <div data-id="app" class="nav-item">Tính điểm</div>
       <div data-id="info" class="nav-item">Thông tin</div>
       <div data-id="statistics" class="nav-item">Thống kê</div>
-      <div data-id="settings" class="nav-item">Cài đặt</div>
     </nav>
     <div id="error">
       <div class="error-message"></div>
@@ -35,7 +34,10 @@
         </div>
 
         <div class="main-data">
-          <button class="btn btn-active btn-import-data">Nhập dữ liệu mới</button>
+          <div class="action-group">
+            <button class="btn btn-active btn-import-data">Nhập dữ liệu mới</button>
+            <button class="btn btn-export-excel">Export Excel</button>
+          </div>
           <div class="updatedAt"></div>
 
           <div class="filter-group">
@@ -65,7 +67,10 @@
           </div>
         </div>
         <div class="main-data">
-          <button class="btn btn-active btn-import-data">Nhập dữ liệu mới</button>
+          <div class="action-group">
+            <button class="btn btn-active btn-import-data">Nhập dữ liệu mới</button>
+            <button class="btn btn-export-excel">Export Excel</button>
+          </div>
           <div class="updatedAt"></div>
 
           <div class="result">
@@ -78,10 +83,7 @@
         </div>
       </section>
       <section id="statistics" class="statistics">
-        <div>Thống kê (Đang phát triển)</div>
-      </section>
-      <section id="settings" class="settings">
-        <div>Cài đặt (Đang phát triển)</div>
+        <div style="text-align: center">(Đang phát triển)</div>
       </section>
     </main>
     <footer id="footer" class="footer">
@@ -114,10 +116,10 @@
         </div>
         <div data-id="info"></div>
         <div data-id="statistics"></div>
-        <div data-id="settings"></div>
       </div>
     </div>
 
+    <script src="./src/assets/xlsx/xlsx.full.min.js"></script>
     <script type="module" src="./src/index.ts"></script>
   </body>
 </html>

@@ -1,6 +1,5 @@
 import { App } from "./app";
 import { Info } from "./info";
-import { Settings } from "./settings";
 import { Statistics } from "./statistics";
 import { _ACTIVE_CLASS, _CURR_TAB_KEY, _ERROR_MESSAGE_TIMEOUT, _IGNORE_LIST_KEY } from "./constants";
 import { _DEFAULT_COMPONENT, _DEFAULT_IGNORE_SUBJECT_DATA } from "./constants/default";
@@ -8,7 +7,7 @@ import { ContainerQS, ContainerQSA, DialogQS, NavQS, NavQSA } from "./utils/quer
 import { closeDialog, removeError } from "./utils/globalDOM";
 import { getLocalData, setLocalData } from "./utils";
 
-type ComponentMappingType = Record<ContainerItemCategory, { unsubscribe: () => void; subscribe: () => void }>;
+type ComponentMappingType = Record<ContainerItemCategory, { onUnmount: () => void; onMount: () => void }>;
 
 (() => {
   const currTab = getLocalData(_CURR_TAB_KEY, _DEFAULT_COMPONENT) as ContainerItemCategory;
@@ -16,12 +15,10 @@ type ComponentMappingType = Record<ContainerItemCategory, { unsubscribe: () => v
   const app = App();
   const info = Info();
   const statistics = Statistics();
-  const settings = Settings();
 
   const componentMapping: ComponentMappingType = {
     app,
     info,
-    settings,
     statistics
   };
 
@@ -66,16 +63,15 @@ type ComponentMappingType = Record<ContainerItemCategory, { unsubscribe: () => v
 
     const removeOldComponent = (componentId: ContainerItemCategory) => {
       const oldComponent = componentMapping[componentId];
-      oldComponent.unsubscribe();
+      oldComponent.onUnmount();
       removeError();
     };
 
     const initNewComponent = (componentId: ContainerItemCategory) => {
-      ContainerQS("section#" + componentId)?.classList.add("active");
+      ContainerQS("section#" + componentId)?.classList.add(_ACTIVE_CLASS);
       setLocalData(_CURR_TAB_KEY, componentId);
-
       const newComponent = componentMapping[componentId];
-      newComponent.subscribe();
+      newComponent.onMount();
     };
   };
 
@@ -90,9 +86,9 @@ type ComponentMappingType = Record<ContainerItemCategory, { unsubscribe: () => v
   };
 
   const defaultRender = () => {
-    NavQS(".nav-item[data-id=" + currTab + "]")?.classList.add("active");
-    ContainerQS("section#" + currTab)?.classList.add("active");
-    componentMapping[currTab].subscribe();
+    NavQS(".nav-item[data-id=" + currTab + "]")?.classList.add(_ACTIVE_CLASS);
+    ContainerQS("section#" + currTab)?.classList.add(_ACTIVE_CLASS);
+    componentMapping[currTab].onMount();
   };
 
   return {

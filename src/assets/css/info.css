@@ -17,8 +17,11 @@
       flex-direction: column;
     }
 
-    .btn-import-data {
-      margin: 8px auto 0;
+    .action-group {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .updatedAt {

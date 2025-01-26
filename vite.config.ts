@@ -23,6 +23,10 @@ export default defineConfig({
         {
           src: "src/assets/img",
           dest: "src/assets"
+        },
+        {
+          src: "src/assets/xlsx",
+          dest: "src/assets"
         }
       ]
     })

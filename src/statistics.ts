@@ -1,9 +1,7 @@
 const Statistics = () => {
   return {
-    subscribe() {},
-    unsubscribe() {},
-    handle() {},
-    render() {}
+    onMount() {},
+    onUnmount() {}
   };
 };
 
