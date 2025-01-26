@@ -1,3 +1,13 @@
+# [0.2.0](https://github.com/holedev/mpc-extension/compare/v0.1.1...v0.2.0) (2025-01-26)
+
+
+### Features
+
+* add feature export to excel ([516b53d](https://github.com/holedev/mpc-extension/commit/516b53de24b114c5b621e6d7816c30ea5dd981ae))
+* add tab info user ([9271d7e](https://github.com/holedev/mpc-extension/commit/9271d7e450d73c125658fc8d685aaa0359372134))
+* create nav menu ([4625071](https://github.com/holedev/mpc-extension/commit/4625071a93e0fef821f7bdd17293580402df61ca))
+* import user info from tienichsv ([bef2867](https://github.com/holedev/mpc-extension/commit/bef2867d7a412653d5a0dcc6aa0d1db20c83ee83))
+
 ## [0.1.1](https://github.com/leho-dev/mpc-extension/compare/v0.1.0...v0.1.1) (2025-01-06)
 
 ### Bug Fixes
