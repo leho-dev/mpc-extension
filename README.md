@@ -9,7 +9,7 @@ Thêm trực tiếp [extension tại Chrome Web Store](https://chromewebstore.go
 ## Build từ mã nguồn (pnpm)
 
 ```bash
-git clone git@github.com:leho-dev/mpc-extension.git
+git clone git@github.com:holedev/mpc-extension.git
 cd mpc-extension
 
 pnpm install
@@ -24,7 +24,7 @@ Sau khi build, folder **dist** sẽ được tạo ra.
 
 ## Cách đóng góp mã nguồn
 
-Xem tại [CONTRIBUTING.md](https://github.com/leho-dev/mpc-extension/blob/dev/CONTRIBUTING.md)
+Xem tại [CONTRIBUTING.md](https://github.com/holedev/mpc-extension/blob/dev/CONTRIBUTING.md)
 
 ## Giấy phép
 
