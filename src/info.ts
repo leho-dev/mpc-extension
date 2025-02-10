@@ -142,7 +142,6 @@ const Info = () => {
 
         case "GET_DATA_USER_COURSE": {
           const hasError = getLocalData(_FLAG_ERROR_KEY, false);
-          console.info("[info.ts:126] ", hasError);
           if (hasError) {
             setLocalData(_FLAG_ERROR_KEY, false);
             noDataE.classList.remove(_ACTIVE_CLASS);

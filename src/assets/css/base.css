@@ -34,7 +34,7 @@ body {
   font-family: "Roboto", sans-serif;
   user-select: none;
   scroll-behavior: smooth;
-  min-width: 500px;
+  min-width: 600px;
   width: fit-content;
   font-size: 1.6rem;
   color: var(--text-color);

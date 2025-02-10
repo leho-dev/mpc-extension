@@ -1,6 +1,7 @@
 // https://developer.chrome.com/docs/extensions/mv3/messaging/
 
 import { _DEBOUNCE_TIME } from "../constants";
+import { _DEFAULT_POINT_MAPPING } from "../constants/default";
 
 export const injectScriptActiveTab = (injectScript: () => void) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -49,6 +50,14 @@ export function formatTime(time: Date) {
 
   const date = new Date(time);
   return date.toLocaleString("vi-VN", options);
+}
+
+export function parseScale10ToCharacterAndScale4(scale10: number): {
+  scale4: PointScale4Type;
+  character: PointCharacterType;
+} {
+  const result = _DEFAULT_POINT_MAPPING.find((grade) => scale10 >= grade.minScale10)!;
+  return { scale4: result.scale4, character: result.character };
 }
 
 // localStorage

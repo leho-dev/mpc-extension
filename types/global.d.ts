@@ -1,5 +1,19 @@
 declare const XLSX: any;
 
+type PointCharacterType = "A+" | "A" | "B+" | "B" | "C+" | "C" | "D+" | "D" | "F" | "M";
+type PointScale4Type = 4 | 3.5 | 3 | 2.5 | 2 | 1.5 | 1 | 0;
+
+type PointMappingType = {
+  minScale10: number;
+  scale4: PointScale4Type;
+  character: PointCharacterType;
+};
+
+type RankTextType = "Xuất sắc" | "Giỏi" | "Khá" | "Trung Bình" | "Yếu" | "Kém";
+type RankMappingType = {
+  [K in RankTextType]: number;
+};
+
 type ParentItemCategory = "#dialog" | "#nav" | "#error" | "#container" | "#footer";
 type ContainerItemCategory = "app" | "info" | "statistics";
 type ChromeMessageTypeCategory = "CHECK_URL" | "GET_DATA_POINT" | "GET_DATA_USER_COURSE";
@@ -41,26 +55,39 @@ type IgnoreListType = {
   updatedAt: Date;
 };
 
-type SubjectType = {
+type ScoreRecordType = {
   code: string;
   name: string;
   credit: number;
-  point: number;
+  point: {
+    scale10: number;
+    scale4: number;
+    character: PointCharacterType;
+  };
   isIgnore?: boolean;
   isHead?: boolean;
 };
 
-type SemesterType = {
+type ScoreGroupType = {
   id: number;
   title: string;
-  data: SubjectType[];
+  data: ScoreRecordType[];
   totalCredit: number;
-  avgPoint: number;
+  avgPoint: {
+    scale10: number;
+    scale4: number;
+  };
 };
 
 type PointDataType = {
-  data: SemesterType[];
+  data: ScoreGroupType[];
   isOnlyCalcGPA: boolean;
   queyText: string;
   updatedAt: Date;
+};
+
+type StatisticsType = {
+  subjectWithoutGPA: number;
+  totalSubject: number;
+  totalCredit: number;
 };

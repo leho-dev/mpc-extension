@@ -3,6 +3,7 @@ import {
   formatTime,
   getLocalData,
   injectScriptActiveTab,
+  parseScale10ToCharacterAndScale4,
   removeVietnameseTones,
   setLocalData
 } from "./utils";
@@ -20,12 +21,17 @@ import {
 } from "./constants";
 import { closeDialog, getTabURL, GetURLMessageType, removeError, setError, showDialog } from "./utils/globalDOM";
 import { ContainerQS, DialogQS, DialogQSA } from "./utils/query";
-import { _DEFAULT_IGNORE_SUBJECT_DATA, _DEFAULT_POINT_DATA, _DEFAULT_USER_DATA } from "./constants/default";
+import {
+  _DEFAULT_FIXED_POINT,
+  _DEFAULT_IGNORE_SUBJECT_DATA,
+  _DEFAULT_POINT_DATA,
+  _DEFAULT_USER_DATA
+} from "./constants/default";
 
 type GetDataPointMessageType = {
   type: ChromeMessageTypeCategory;
   payload: {
-    data: SemesterType[];
+    data: ScoreGroupType[];
   };
 };
 
@@ -36,7 +42,7 @@ const getData = async () => {
       "table#excel-table > tbody > tr.table-primary.ng-star-inserted, table#excel-table > tbody > tr.text-center.ng-star-inserted"
     );
 
-    const data: SemesterType[] = [];
+    const data: ScoreGroupType[] = [];
 
     Array.from(tableRows).forEach((row, index) => {
       const columns = row.querySelectorAll("td");
@@ -49,16 +55,25 @@ const getData = async () => {
           title: columns[0].innerText,
           data: [],
           totalCredit: 0,
-          avgPoint: 0
+          avgPoint: {
+            scale10: 0,
+            scale4: 0
+          }
         });
       }
 
       if (!isHead) {
+        const character = columns[11].innerText as PointCharacterType;
+
         data[data.length - 1].data.push({
           code: columns[1].innerText,
           name: columns[3].innerText,
           credit: parseFloat(columns[4].innerText) || 0,
-          point: parseFloat(columns[10].innerText)
+          point: {
+            scale10: parseFloat(columns[9].innerText),
+            scale4: parseFloat(columns[10].innerText),
+            character
+          }
         });
       }
     });
@@ -229,20 +244,31 @@ const App = () => {
           const point = curr.point;
           const credit = curr.credit;
 
-          if (curr.isIgnore || isNaN(point) || isNaN(credit)) return acc;
+          const isIgnore = curr.isIgnore || isNaN(credit) || isNaN(point.scale10) || isNaN(point.scale4);
+          if (isIgnore) return acc;
+
           return {
-            point: acc.point + point * credit,
+            point: {
+              scale10: acc.point.scale10 + point.scale10 * credit,
+              scale4: acc.point.scale4 + point.scale4 * credit
+            },
             credit: acc.credit + credit
           };
         },
         {
-          point: 0,
+          point: {
+            scale10: 0,
+            scale4: 0
+          },
           credit: 0
         }
       );
 
       d.totalCredit = totalCredit;
-      d.avgPoint = parseFloat((avg.point / avg.credit).toFixed(3));
+      d.avgPoint = {
+        scale10: parseFloat((avg.point.scale10 / avg.credit).toFixed(_DEFAULT_FIXED_POINT)),
+        scale4: parseFloat((avg.point.scale4 / avg.credit).toFixed(_DEFAULT_FIXED_POINT))
+      };
     });
   };
 
@@ -264,7 +290,9 @@ const App = () => {
                 <td>${item.code}</td>
                 <td>${item.name}</td>
                 <td style="min-width: 20px;">${item.credit}</td>
-                <td style="min-width: 20px;">${item.point || ""}</td>
+                <td style="min-width: 40px;">${item.point?.scale10?.toFixed(1) || ""}</td>
+                <td style="min-width: 40px;">${item.point?.scale4?.toFixed(1) || ""}</td>
+                <td style="min-width: 40px;">${item.point.character || ""}</td>
                 <td class="btn-delete" style="min-width: 20px;">x</td>
             </tr>
             `;
@@ -274,10 +302,18 @@ const App = () => {
 
         return `
           <tr class="row-head" data-group-idx=${groupIdx}>
-              <td colspan="5">
+              <td colspan="7">
                 <div class="row-wrap">
-                  <div class="row-wrap-left"><span>${group.title}</span> <span title="Thêm môn học" class="btn btn-add-subject">+</span></div> 
-                  <div class="row-wrap-right">${group.totalCredit} - ${group.avgPoint?.toFixed(3) || NaN}</div>
+                  <div class="row-wrap-left"><span>${group.title} (<b>${group.totalCredit} tín chỉ</b>)</span> <span title="Thêm môn học" class="btn btn-add-subject">+</span></div> 
+                  <div class="row-wrap-right">
+                  <span>
+                    Hệ 10: <b>${group.avgPoint?.scale10?.toFixed(_DEFAULT_FIXED_POINT) || NaN}</b>
+                  </span>
+                  - 
+                  <span>
+                    Hệ 4: <b>${group.avgPoint?.scale4?.toFixed(_DEFAULT_FIXED_POINT) || NaN}</b>
+                  </span>
+                  </div>
                 </div>
               </td>
           </tr>
@@ -290,38 +326,63 @@ const App = () => {
       return acc + curr.totalCredit;
     }, 0);
 
-    const avgTotal = { point: 0, credit: 0 };
+    const avgTotal = {
+      point: {
+        scale10: 0,
+        scale4: 0
+      },
+      credit: 0
+    };
 
     state.data.forEach((item) => {
-      if (isNaN(item.avgPoint) || !item.avgPoint) return;
+      const isIgnore =
+        isNaN(item.avgPoint.scale10) || isNaN(item.avgPoint.scale4) || !item.avgPoint.scale10 || !item.avgPoint.scale4;
+      if (isIgnore) return;
       const avg = item.data.reduce(
         (acc, curr) => {
           const point = curr.point;
           const credit = curr.credit;
 
-          if (curr.isIgnore || isNaN(point) || isNaN(credit)) return acc;
+          if (curr.isIgnore || isNaN(point.scale4) || isNaN(credit)) return acc;
           return {
-            point: acc.point + point * credit,
+            point: {
+              scale10: acc.point.scale10 + point.scale10 * credit,
+              scale4: acc.point.scale4 + point.scale4 * credit
+            },
             credit: acc.credit + credit
           };
         },
         {
-          point: 0,
+          point: {
+            scale10: 0,
+            scale4: 0
+          },
           credit: 0
         }
       );
 
-      avgTotal.point += avg.point;
+      avgTotal.point.scale10 += avg.point.scale10;
+      avgTotal.point.scale4 += avg.point.scale4;
       avgTotal.credit += avg.credit;
     });
 
     tableResultE.innerHTML = tableHtmls;
     updatedAtE.innerHTML = `(Cập nhật ${formatTime(state.updatedAt)})`;
+    appContainer.querySelector(".total-semester span")!.innerHTML = (state.data.length - 1).toString();
     appContainer.querySelector(".total-credit span")!.innerHTML = totalCredit.toString();
-    appContainer.querySelector(".avg-point span")!.innerHTML = (avgTotal.point / avgTotal.credit).toFixed(3);
+    appContainer.querySelector(".avg-point .scale10 span")!.innerHTML = (
+      avgTotal.point.scale10 / avgTotal.credit
+    ).toFixed(_DEFAULT_FIXED_POINT);
+    appContainer.querySelector(".avg-point .scale4 span")!.innerHTML = (
+      avgTotal.point.scale4 / avgTotal.credit
+    ).toFixed(_DEFAULT_FIXED_POINT);
   };
 
-  const showAppDialog = (semester: { title: string; idx: number }, action: ActionCategory, subject?: SubjectType) => {
+  const showAppDialog = (
+    semester: { title: string; idx: number },
+    action: ActionCategory,
+    subject?: ScoreRecordType
+  ) => {
     const appDialog = DialogQS("[data-id='app']") as HTMLElement;
 
     appDialog.querySelector(".form-subject .title")!.innerHTML = semester.title;
@@ -347,7 +408,7 @@ const App = () => {
         inputList[0].value = subject.name;
         inputList[1].value = subject.code;
         inputList[2].value = subject.credit?.toString();
-        inputList[3].value = subject.point?.toString();
+        inputList[3].value = subject.point?.scale10?.toString();
         break;
     }
 
@@ -369,7 +430,9 @@ const App = () => {
         "Mã môn học",
         "Tên môn học",
         "Số tín chỉ",
-        "Điểm",
+        "Điểm hệ 10",
+        "Điểm hệ 4",
+        "Xếp loại",
         "Ghi chú (Không tính GPA)"
       ]);
 
@@ -382,7 +445,9 @@ const App = () => {
             subject.code,
             subject.name,
             subject.credit,
-            subject.point ?? "N/A",
+            subject.point.scale10 ?? "N/A",
+            subject.point.scale4 ?? "N/A",
+            subject.point.character ?? "N/A",
             subject.isIgnore ? "Không tính" : ""
           ]);
         });
@@ -396,6 +461,8 @@ const App = () => {
         { width: 30 },
         { width: 15 },
         { width: 50 },
+        { width: 10 },
+        { width: 10 },
         { width: 10 },
         { width: 10 },
         { width: 20 }
@@ -431,12 +498,14 @@ const App = () => {
       const name = inputList[0].value.trim();
       const code = inputList[1].value.trim();
       const credit = parseInt(inputList[2].value.trim());
-      const point = parseFloat(inputList[3].value.trim());
+      const scale10 = parseFloat(inputList[3].value.trim());
 
-      if (!name || !code || !credit || !point) {
+      if (!name || !code || !credit || !scale10) {
         setError("Vui lòng điền đầy đủ thông tin!");
         return;
       }
+
+      const { scale4, character } = parseScale10ToCharacterAndScale4(scale10);
 
       const isExist = state.data.find((d) => d.data.find((item) => item.code === code));
       if (isExist && action === _ACTION_CREATE) {
@@ -445,12 +514,21 @@ const App = () => {
       }
 
       if (action === _ACTION_CREATE) {
-        state.data[idx].data.push({ name, code, credit, point });
+        state.data[idx].data.push({
+          name,
+          code,
+          credit,
+          point: {
+            scale10,
+            scale4,
+            character
+          }
+        });
       }
 
       if (action === _ACTION_UPDATE) {
         const itemIdx = state.data[idx].data.findIndex((item) => item.code === code);
-        state.data[idx].data[itemIdx] = { name, code, credit, point };
+        state.data[idx].data[itemIdx] = { name, code, credit, point: { scale10, scale4, character } };
       }
 
       updateData();
@@ -493,7 +571,6 @@ const App = () => {
   return {
     onMount() {
       subscribe();
-
       firstCheck();
       eventHandlers();
       renderData();

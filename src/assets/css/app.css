@@ -33,13 +33,27 @@
     }
   }
 
-  .total-credit,
-  .avg-point {
+  .total-semester,
+  .total-credit {
     display: flex;
 
     span {
       font-weight: bold;
       margin-left: auto;
+    }
+  }
+
+  .avg-point {
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 12px;
+
+      span {
+        font-weight: bold;
+        margin-left: auto;
+      }
     }
   }
 
@@ -80,6 +94,7 @@
     width: 100%;
     border-collapse: collapse;
     user-select: text;
+    margin-top: 12px;
 
     td {
       padding: 2px 4px;
@@ -107,11 +122,14 @@
 
     .row-head {
       background-color: #bad5e4;
-      font-weight: bold;
 
       .row-wrap {
-        display: flex;
-        justify-content: space-between;
+        .row-wrap-left {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 4px;
+        }
       }
     }
   }

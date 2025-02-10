@@ -50,36 +50,10 @@
 
       td {
         padding: 2px 4px;
-
-        &:not(:first-child, :nth-child(2)) {
-          text-align: center;
-        }
       }
 
-      .row-data {
-        &.ignore {
-          background-color: #e3e3e3;
-        }
-
-        &:hover {
-          cursor: pointer;
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-delete:hover {
-          color: red;
-          font-weight: bold;
-        }
-      }
-
-      .row-head {
-        background-color: #bad5e4;
-        font-weight: bold;
-
-        .row-wrap {
-          display: flex;
-          justify-content: space-between;
-        }
+      td:first-child {
+        width: 200px;
       }
     }
   }

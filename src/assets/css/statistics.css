@@ -9,4 +9,28 @@
     margin-top: 8px;
     display: flex;
   }
+
+  .no-data {
+    .group-nav {
+      margin-top: 8px;
+    }
+  }
+
+  .main-data {
+    display: none;
+
+    &.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      margin-top: 12px;
+      text-transform: uppercase;
+    }
+  }
 }
