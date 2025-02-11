@@ -1,4 +1,5 @@
 declare const XLSX: any;
+declare const Chart: any;
 
 type PointCharacterType = "A+" | "A" | "B+" | "B" | "C+" | "C" | "D+" | "D" | "F" | "M";
 type PointScale4Type = 4 | 3.5 | 3 | 2.5 | 2 | 1.5 | 1 | 0;
@@ -65,6 +66,7 @@ type ScoreRecordType = {
     character: PointCharacterType;
   };
   isIgnore?: boolean;
+  // chỉ dùng isHead khi crawl
   isHead?: boolean;
 };
 
@@ -84,10 +86,4 @@ type PointDataType = {
   isOnlyCalcGPA: boolean;
   queyText: string;
   updatedAt: Date;
-};
-
-type StatisticsType = {
-  subjectWithoutGPA: number;
-  totalSubject: number;
-  totalCredit: number;
 };

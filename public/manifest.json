@@ -7,11 +7,11 @@
   "action": {
     "default_popup": "index.html",
     "default_icon": {
-      "16": "./src/assets/img/icon16.png",
-      "32": "./src/assets/img/icon32.png",
-      "48": "./src/assets/img/icon48.png",
-      "64": "./src/assets/img/icon64.png",
-      "128": "./src/assets/img/icon128.png"
+      "16": "./img/icon16.png",
+      "32": "./img/icon32.png",
+      "48": "./img/icon48.png",
+      "64": "./img/icon64.png",
+      "128": "./img/icon128.png"
     }
   }
 }

@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdnjs.cloudflare.com;" />
     <title>MPC Extension</title>
-    <link rel="stylesheet" href="./src/assets/css/base.css" />
-    <link rel="stylesheet" href="./src/assets/css/app.css" />
-    <link rel="stylesheet" href="./src/assets/css/info.css" />
-    <link rel="stylesheet" href="./src/assets/css/statistics.css" />
+    <link rel="stylesheet" href="./src/css/base.css" />
+    <link rel="stylesheet" href="./src/css/app.css" />
+    <link rel="stylesheet" href="./src/css/info.css" />
+    <link rel="stylesheet" href="./src/css/statistics.css" />
   </head>
 
   <body>
@@ -96,7 +95,6 @@
           </div>
         </div>
         <div class="main-data">
-          <h5 class="title">Thống kê</h5>
           <div class="result"></div>
         </div>
       </section>
@@ -134,7 +132,8 @@
       </div>
     </div>
 
-    <script src="./src/assets/xlsx/xlsx.full.min.js"></script>
+    <script src="./xlsx/xlsx.full.min.js"></script>
+    <script src="./chartjs/chart.js"></script>
     <script type="module" src="./src/index.ts"></script>
   </body>
 </html>

@@ -10,7 +10,7 @@ if (!version) {
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const manifestPath = path.resolve(__dirname, "../manifest.json");
+const manifestPath = path.resolve(__dirname, "../public/manifest.json");
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 

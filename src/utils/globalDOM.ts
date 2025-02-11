@@ -16,7 +16,7 @@ export const removeError = () => {
 
 export const showDialog = (component: ContainerItemCategory) => {
   DialogQS()!.classList.add(_ACTIVE_CLASS);
-  DialogQS(`.dialog-body ${component}`)!.classList.add(_ACTIVE_CLASS);
+  DialogQS(`.dialog-body [data-id=${component}]`)!.classList.add(_ACTIVE_CLASS);
 };
 
 export const closeDialog = () => {

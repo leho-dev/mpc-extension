@@ -131,6 +131,10 @@
           gap: 4px;
         }
       }
+
+      .btn-add-subject {
+        padding: 4px 2px;
+      }
     }
   }
 

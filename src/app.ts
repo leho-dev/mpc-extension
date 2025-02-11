@@ -234,9 +234,9 @@ const App = () => {
   const getTotal = () => {
     state.data.forEach((d) => {
       const totalCredit = d.data.reduce((acc, curr) => {
-        if (curr.isHead) return acc;
-        if (curr.isIgnore) return acc;
-        return acc + curr.credit;
+        const isValidCredit = !curr.isIgnore && curr.point.character;
+        if (!isValidCredit) acc + curr.credit;
+        return acc;
       }, 0);
 
       const avg = d.data.reduce(
@@ -244,7 +244,8 @@ const App = () => {
           const point = curr.point;
           const credit = curr.credit;
 
-          const isIgnore = curr.isIgnore || isNaN(credit) || isNaN(point.scale10) || isNaN(point.scale4);
+          const isIgnore =
+            curr.isIgnore || isNaN(credit) || isNaN(point.scale10) || isNaN(point.scale4) || !point.character;
           if (isIgnore) return acc;
 
           return {

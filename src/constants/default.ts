@@ -1,3 +1,4 @@
+export const _DEFAULT_IGNORE_SEMESTER_TITLE: string = "Bảo lưu";
 export const _DEFAULT_FIXED_POINT: number = 3;
 export const _DEFAULT_COMPONENT: ContainerItemCategory = "app";
 

@@ -22,7 +22,7 @@ export default [
       ]
     }
   },
-  { ignores: ["node_modules", "commitlint.config.js", "dist", "src/assets/xlsx"] },
+  { ignores: ["node_modules", "commitlint.config.js", "dist", "public"] },
   pluginJs.configs.recommended,
   eslintConfigPrettier
 ];
