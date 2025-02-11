@@ -1,9 +1,12 @@
 {
   "manifest_version": 3,
   "name": "MPC Extension",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "Extension hỗ trợ sinh viên trường Đại học Mở TP. HCM trong việc lên kế hoạch học tập.",
-  "permissions": ["scripting", "activeTab"],
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
   "action": {
     "default_popup": "index.html",
     "default_icon": {

@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/mpc-ou/mpc-extension/compare/v0.3.0...v0.3.1) (2025-02-11)
+
+
+### Bug Fixes
+
+* **ci:** add public/manifest.json to assets semantic-release ([a900858](https://github.com/mpc-ou/mpc-extension/commit/a90085893adf9bee7173645b6109e71f0e95bcff))
+
 # [0.3.0](https://github.com/mpc-ou/mpc-extension/compare/v0.2.0...v0.3.0) (2025-02-11)
 
 
