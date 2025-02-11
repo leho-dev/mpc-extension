@@ -1,3 +1,11 @@
+# [0.3.0](https://github.com/mpc-ou/mpc-extension/compare/v0.2.0...v0.3.0) (2025-02-11)
+
+
+### Features
+
+* **point:** crawl and use point 10 with character ([1845086](https://github.com/mpc-ou/mpc-extension/commit/1845086cad20ffadf8488d171ef339a7bf1950cb))
+* **statistics:** statistics point of user ([e943135](https://github.com/mpc-ou/mpc-extension/commit/e943135e0d216d8df505de79e4a593ecc9daf566))
+
 # [0.2.0](https://github.com/holedev/mpc-extension/compare/v0.1.1...v0.2.0) (2025-01-26)
 
 
