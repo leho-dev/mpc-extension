@@ -36,17 +36,17 @@ Trong trường hợp bạn muốn đề xuất một tính năng mới, hãy t�
 
 Trước khi gửi PR, hãy đọc qua các bước dưới đây:
 
-1. Tìm kiếm trên [GitHub](https://github.com/leho-dev/mpc-extension/pulls) xem đã có PR nào trước đó tương tự hay chưa.
+1. Tìm kiếm trên [GitHub](https://github.com/mpc-ou/mpc-extension/pulls) xem đã có PR nào trước đó tương tự hay chưa.
 
 2. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) repo này về máy.
 
 3. Tạo một nhánh mới để fix lỗi:
 
    ```shell
-   git checkout -b my-fix-branch master
+   git checkout -b my-fix-branch main
    ```
 
-4. Commit các thay đổi theo quy tắc [commit message conventions](https://www.conventionalcommits.org/en/v1.0.0/), bạn có thể xem các ví dụ tại [đây](https://github.com/leho-dev/mpc-extension/commits/master/).
+4. Commit các thay đổi theo quy tắc [commit message conventions](https://www.conventionalcommits.org/en/v1.0.0/), bạn có thể xem các ví dụ tại [đây](https://github.com/mpc-ou/mpc-extension/commits/main/).
 
 5. Đưa code lên github:
 
@@ -54,4 +54,4 @@ Trước khi gửi PR, hãy đọc qua các bước dưới đây:
    git push origin my-fix-branch
    ```
 
-6. Trên GitHub, tạo một PR đến nhánh `master` của `mpc-extension`.
+6. Trên GitHub, tạo một PR đến nhánh `main` của `mpc-extension`.

@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "type": "module",
   "private": true,
-  "description": "",
+  "description": "Extension hỗ trợ sinh viên trường Đại học Mở TP. HCM trong việc lên kế hoạch học tập.",
   "scripts": {
     "format": "pnpm dlx prettier --write .",
     "lint": "pnpm eslint",
@@ -20,8 +20,8 @@
     ]
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "@mpc",
+  "license": "GNU General Public License v3.0",
   "devDependencies": {
     "@commitlint/cli": "^19.4.0",
     "@commitlint/config-conventional": "^19.2.2",

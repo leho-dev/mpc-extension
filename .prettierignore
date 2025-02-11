@@ -1,4 +1,5 @@
 node_modules/
 dist/
 pnpm-lock.yaml
+**/xlsx.full.min.js
 CHANGELOG.md

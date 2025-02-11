@@ -9,7 +9,7 @@ export const _ACTIVE_CLASS = "active";
 export const _TIENICHSV_URL = "https://tienichsv.ou.edu.vn" as const;
 export const _TIENICHSDH_URL = "https://tienichsdh.ou.edu.vn" as const;
 export const _FB_HOMEPAGE_URL: string = "https://www.facebook.com/CLBLapTrinhTrenThietBiDiDong" as const;
-export const _GITHUB_URL: string = "https://github.com/holedev/mpc-extension" as const;
+export const _GITHUB_URL: string = "https://github.com/mpc-ou/mpc-extension" as const;
 
 export const _POINT_KEY = "point" as const;
 export const _USER_KEY = "user" as const;
