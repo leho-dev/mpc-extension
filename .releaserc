@@ -19,7 +19,7 @@
       {
         "assets": [
           "package.json",
-          "manifest.json",
+          "public/manifest.json",
           "CHANGELOG.md"
         ],
         "message": "chore(release): update version to ${nextRelease.version} [skip ci]"
