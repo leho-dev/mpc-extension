@@ -102,10 +102,10 @@ const Statistics = () => {
             countAllCharacter++;
             characterCount[subject.point.character as Exclude<PointCharacterType, "M">]++;
           }
+        }
 
-          if (subject.credit) {
-            countAllCredit += subject.credit;
-          }
+        if (subject.credit) {
+          countAllCredit += subject.credit;
         }
       });
 
