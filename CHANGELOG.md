@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/mpc-ou/mpc-extension/compare/v0.3.1...v0.3.2) (2025-02-12)
+
+
+### Bug Fixes
+
+* **statistics:** sum of credit must include ignore credit ([558f446](https://github.com/mpc-ou/mpc-extension/commit/558f44666b83d8a258864cd41e10be2f81e63753))
+
 ## [0.3.1](https://github.com/mpc-ou/mpc-extension/compare/v0.3.0...v0.3.1) (2025-02-11)
 
 
