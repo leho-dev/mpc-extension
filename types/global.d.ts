@@ -87,3 +87,15 @@ type PointDataType = {
   queyText: string;
   updatedAt: Date;
 };
+
+// type Subject = {
+//   code: string;
+//   name: string;
+//   credit: number;
+//   finalPointRate: number;
+// };
+
+// type MajorType = {
+//   name: string;
+//   subjects: Subject[];
+// };
