@@ -1,3 +1,4 @@
+import { setLocalData } from ".";
 import { _ACTIVE_CLASS, _ERROR_MESSAGE_TIMEOUT, _FLAG_ERROR_KEY } from "../constants";
 import { DialogQSA, DialogQS, ErrorQS } from "./query";
 
@@ -6,12 +7,13 @@ export const setError = (message: string) => {
   ErrorQS()!.classList.add(_ACTIVE_CLASS);
 
   setTimeout(() => {
-    ErrorQS()!.classList.remove(_ACTIVE_CLASS);
+    removeError();
   }, _ERROR_MESSAGE_TIMEOUT);
 };
 
 export const removeError = () => {
   ErrorQS()!.classList.remove(_ACTIVE_CLASS);
+  setLocalData(_FLAG_ERROR_KEY, false);
 };
 
 export const showDialog = (component: ContainerItemCategory) => {

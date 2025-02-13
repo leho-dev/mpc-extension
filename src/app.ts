@@ -234,9 +234,9 @@ const App = () => {
   const getTotal = () => {
     state.data.forEach((d) => {
       const totalCredit = d.data.reduce((acc, curr) => {
-        const isValidCredit = !curr.isIgnore && curr.point.character;
-        if (!isValidCredit) acc + curr.credit;
-        return acc;
+        const isIgnoreCredit = curr.isIgnore || !curr.point.character;
+        if (isIgnoreCredit) return acc;
+        return acc + curr.credit;
       }, 0);
 
       const avg = d.data.reduce(
