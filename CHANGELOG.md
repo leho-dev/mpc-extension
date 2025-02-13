@@ -1,3 +1,10 @@
+## [0.3.4](https://github.com/mpc-ou/mpc-extension/compare/v0.3.3...v0.3.4) (2025-02-13)
+
+
+### Bug Fixes
+
+* **ci:** semantic release not update package version ([35bd69c](https://github.com/mpc-ou/mpc-extension/commit/35bd69c2a92fb8b53dc66428cbab5bed5cc99260))
+
 ## [0.3.3](https://github.com/mpc-ou/mpc-extension/compare/v0.3.2...v0.3.3) (2025-02-13)
 
 
